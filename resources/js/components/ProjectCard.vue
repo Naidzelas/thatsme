@@ -68,37 +68,37 @@ const openExternalLink = () => {
 
 <template>
     <article
-        class="flex flex-col gap-6 bg-white shadow-sm p-4 border border-slate-200 rounded-lg h-full"
+        class="flex h-full flex-col gap-6 rounded-lg border border-slate-200 bg-white p-4 shadow-sm"
     >
         <div class="flex gap-4">
             <div
-                class="place-items-center grid bg-slate-50 border border-slate-200 rounded-lg w-14 h-14 shrink-0"
+                class="grid h-14 w-14 shrink-0 place-items-center rounded-lg border border-slate-200 bg-slate-50"
             >
                 <img
                     v-if="project.logoUrl"
                     :src="project.logoUrl"
                     :alt="`${project.title} logo`"
-                    class="w-10 h-10 object-contain"
+                    class="h-10 w-10 object-contain"
                     loading="lazy"
                 />
                 <img
                     v-else-if="technologyIconUrl"
                     :src="technologyIconUrl"
                     :alt="`${project.primaryTechnology} icon`"
-                    class="w-8 h-8 object-contain"
+                    class="h-8 w-8 object-contain"
                     loading="lazy"
                 />
                 <i
                     v-else
-                    class="text-slate-500 text-3xl leading-none pi pi-code"
+                    class="pi pi-code text-3xl leading-none text-slate-500"
                     aria-hidden="true"
                 />
             </div>
 
-            <div class="flex flex-col flex-1 gap-2 min-w-0">
-                <div class="flex justify-between items-start gap-3">
+            <div class="flex min-w-0 flex-1 flex-col gap-2">
+                <div class="flex items-start justify-between gap-3">
                     <h2
-                        class="font-semibold text-slate-950 text-xl leading-tight tracking-normal"
+                        class="text-xl leading-tight font-semibold tracking-normal text-slate-950"
                     >
                         {{ project.title }}
                     </h2>
@@ -108,13 +108,13 @@ const openExternalLink = () => {
                         rounded
                     />
                 </div>
-                <span class="text-slate-500 text-sm leading-tight">
+                <span class="text-sm leading-tight text-slate-500">
                     {{ project.category }}
                 </span>
             </div>
         </div>
 
-        <p class="flex-1 text-slate-600 text-sm leading-6">
+        <p class="flex-1 text-sm leading-6 text-slate-600">
             {{ project.summary }}
         </p>
 

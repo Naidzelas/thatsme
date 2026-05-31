@@ -1,21 +1,21 @@
 export default {
     app: {
         name: 'Naidželas Benetis',
-        openMenu: 'Atidaryti navigacija',
-        closeMenu: 'Uzdaryti navigacija',
+        openMenu: 'Atidaryti navigaciją',
+        closeMenu: 'Uždaryti navigaciją',
         language: 'Kalba',
         contact: 'Kontaktai',
         updatedAt: 'Atnaujinta {date}',
     },
     nav: {
-        home: 'Pradzia',
+        home: 'Pradžia',
         experience: 'Patirtis',
         projects: 'Projektai',
     },
     actions: {
-        viewExperience: 'Perziureti patirti',
-        viewProjects: 'Perziureti projektus',
-        sendEmail: 'El. pastas',
+        viewExperience: 'Peržiūrėti patirtį',
+        viewProjects: 'Peržiūrėti projektus',
+        sendEmail: 'El. paštas',
         openSocial: 'Atidaryti {platform}',
         openStory: 'Atidaryti istoriją',
         openWebsite: 'Atidaryti svetainę',
@@ -23,16 +23,28 @@ export default {
         linkComingSoon: 'Netrukus',
         previous: 'Atgal',
         next: 'Toliau',
+        backToProjects: 'Grįžti į projektus',
+        viewProjectsWithSkill: 'Rodyti projektus su {skill}',
     },
     labels: {
         outcomes: 'Rezultatai',
         technologies: 'Technologijos',
+        storyOverviewSignal: 'Apžvalga',
+        showcase: 'Demonstracija',
+        showcaseComingSoon: 'Demonstracijos turinys bus pridėtas vėliau.',
+        clickNextToViewStory:
+            'Spustelėkite "Toliau", kad peržiūrėtumėte istoriją',
         selectTechnologiesToFilter: 'Pasirink technologijas filtravimui',
         selectedFilters: 'Pasirinkti filtrai',
+        searchSkills: 'Ieškoti įgūdžių',
+        skillGroup: 'Įgūdžių grupė',
+        skillSphere: 'Technologijų raktažodžių tinklas',
         publicProjects: 'Vieši',
         personalProjects: 'Asmeniniai',
         projectCount: '{count} projektai',
         noMatchingProjects: 'Nėra projektų pagal pasirinktas technologijas.',
+        noSpecificProjectForSkill:
+            'Konkretaus projekto pagal {skill} nerasta. Rodomi visi projektai, nes šis įgūdis greičiausiai naudojamas plačiau.',
     },
     statuses: {
         active: 'Aktyvus',
@@ -59,6 +71,11 @@ export default {
             title: 'Pirmiausia projektų sąrašas, o istorijos tada, kai reikia detalių.',
             intro: 'Peržiūrėk viešus ir asmeninius projektus, filtruok pagal technologiją ir atidaryk pasirinktą istoriją.',
             filterTitle: 'Naujausi projektai',
+        },
+        projectStory: {
+            missingTitle: 'Projekto istorija nerasta',
+            missingIntro:
+                'Si projekto istorija nera pasiekiama dabartiniuose portfolio duomenyse.',
         },
     },
 } as const;

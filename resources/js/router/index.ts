@@ -30,6 +30,14 @@ const router = createRouter({
             },
         },
         {
+            path: '/projects/:slug',
+            name: 'project-story',
+            component: () => import('@/pages/ProjectStoryPage.vue'),
+            meta: {
+                title: 'Project Story',
+            },
+        },
+        {
             path: '/:pathMatch(.*)*',
             redirect: '/',
         },

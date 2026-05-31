@@ -24,16 +24,27 @@ export default {
         linkComingSoon: 'Coming soon',
         previous: 'Previous',
         next: 'Next',
+        backToProjects: 'Back to projects',
+        viewProjectsWithSkill: 'View projects with {skill}',
     },
     labels: {
         outcomes: 'Outcomes',
         technologies: 'Technologies',
+        storyOverviewSignal: 'Overview',
+        showcase: 'Showcase',
+        showcaseComingSoon: 'Showcase content is coming soon.',
+        clickNextToViewStory: 'click next to view story',
         selectTechnologiesToFilter: 'Select technologies to filter',
         selectedFilters: 'Selected filters',
+        searchSkills: 'Search skills',
+        skillGroup: 'Skill group',
+        skillSphere: 'Technology keyword mesh',
         publicProjects: 'Public',
         personalProjects: 'Personal',
         projectCount: '{count} projects',
         noMatchingProjects: 'No projects match the selected technologies.',
+        noSpecificProjectForSkill:
+            'No specific project was found for {skill}. Showing all projects because this skill is likely used more generally across the work.',
     },
     statuses: {
         active: 'Active',
@@ -60,6 +71,11 @@ export default {
             title: 'Project list first, stories when you need the detail.',
             intro: 'Browse public and personal projects, filter by technology, then open a story for the project you want to inspect.',
             filterTitle: 'Latest Projects',
+        },
+        projectStory: {
+            missingTitle: 'Project story not found',
+            missingIntro:
+                'This project story is not available in the current portfolio data.',
         },
     },
 } as const;

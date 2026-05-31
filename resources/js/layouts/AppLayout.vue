@@ -47,7 +47,10 @@ const closeMenu = () => {
 };
 
 const isActivePath = (path: string) => {
-    return route.path === path;
+    return (
+        route.path === path ||
+        (path !== '/' && route.path.startsWith(`${path}/`))
+    );
 };
 </script>
 

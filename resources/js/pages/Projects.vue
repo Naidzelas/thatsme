@@ -1,13 +1,19 @@
 <script setup lang="ts">
 import Chip from 'primevue/chip';
+import Message from 'primevue/message';
 import MultiSelect from 'primevue/multiselect';
-import { computed, nextTick, ref, watch } from 'vue';
+import { computed, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { useRoute, useRouter } from 'vue-router';
 
 import ProjectCard from '@/components/ProjectCard.vue';
-import ProjectStory from '@/components/ProjectStory.vue';
 import { usePortfolio } from '@/composables/usePortfolio';
 import type { ProjectItem } from '@/data/portfolio';
+import {
+    areStringArraysEqual,
+    getNormalizedQueryValues,
+    normalizeTechnology,
+} from '@/lib/utils';
 
 interface TechnologyOption {
     name: string;
@@ -15,30 +21,47 @@ interface TechnologyOption {
 }
 
 const { t } = useI18n({ useScope: 'global' });
+const route = useRoute();
+const router = useRouter();
 const { content } = usePortfolio();
-const activeProjectSlug = ref<string | null>(null);
 const selectedTechnologies = ref<TechnologyOption[]>([]);
-const storySection = ref<HTMLElement | null>(null);
 
-const normalizeTechnology = (technology: string) =>
-    technology
-        .toLocaleLowerCase('en-US')
-        .replace(/[^a-z0-9]+/g, '-')
-        .replace(/^-|-$/g, '');
+const formatFallbackTechnologyName = (code: string) =>
+    code
+        .split('-')
+        .filter(Boolean)
+        .map((part) => (part.length <= 3 ? part.toUpperCase() : part))
+        .join(' ');
 
 const technologyOptions = computed(() => {
     const optionsByCode = new Map<string, TechnologyOption>();
 
+    const addOption = (technology: string) => {
+        const code = normalizeTechnology(technology);
+
+        if (!optionsByCode.has(code)) {
+            optionsByCode.set(code, {
+                name: technology,
+                code,
+            });
+        }
+    };
+
     content.value.projects.forEach((project) => {
         project.stack.forEach((technology) => {
-            const code = normalizeTechnology(technology);
+            addOption(technology);
+        });
+    });
 
-            if (!optionsByCode.has(code)) {
-                optionsByCode.set(code, {
-                    name: technology,
-                    code,
-                });
-            }
+    content.value.home.skillGroups.forEach((group) => {
+        group.items.forEach((technology) => {
+            addOption(technology);
+        });
+    });
+
+    content.value.home.keywordGroups.forEach((group) => {
+        group.items.forEach((skill) => {
+            addOption(skill.label);
         });
     });
 
@@ -47,10 +70,87 @@ const technologyOptions = computed(() => {
     );
 });
 
+const technologyOptionsByCode = computed(
+    () =>
+        new Map(
+            technologyOptions.value.map((technology) => [
+                technology.code,
+                technology,
+            ]),
+        ),
+);
+
+const getSelectedTechnologyCodes = () =>
+    selectedTechnologies.value.map((technology) => technology.code);
+
+const resolveTechnologySelections = (codes: string[]) =>
+    codes.map((code) => {
+        return (
+            technologyOptionsByCode.value.get(code) ?? {
+                name: formatFallbackTechnologyName(code),
+                code,
+            }
+        );
+    });
+
 const selectedTechnologyCodes = computed(() => {
+    return new Set(getSelectedTechnologyCodes());
+});
+
+const validSelectedTechnologyCodes = computed(() => {
     return new Set(
-        selectedTechnologies.value.map((technology) => technology.code),
+        getSelectedTechnologyCodes().filter((code) =>
+            technologyOptionsByCode.value.has(code),
+        ),
     );
+});
+
+const selectedTechnologyNames = computed(() =>
+    selectedTechnologies.value.map((technology) => technology.name).join(', '),
+);
+
+const matchedProjects = computed(() => {
+    if (validSelectedTechnologyCodes.value.size === 0) {
+        return [];
+    }
+
+    return content.value.projects.filter((project) =>
+        project.stack.some((technology) =>
+            validSelectedTechnologyCodes.value.has(
+                normalizeTechnology(technology),
+            ),
+        ),
+    );
+});
+
+const hasMissingSelectedTechnologyFilters = computed(() => {
+    return (
+        selectedTechnologyCodes.value.size > 0 &&
+        selectedTechnologyCodes.value.size !==
+            validSelectedTechnologyCodes.value.size
+    );
+});
+
+const shouldShowAllProjectsForFilter = computed(() => {
+    if (!hasSelections.value) {
+        return false;
+    }
+
+    return (
+        hasMissingSelectedTechnologyFilters.value ||
+        validSelectedTechnologyCodes.value.size === 0 ||
+        matchedProjects.value.length === 0
+    );
+});
+
+const filterNoticeMessage = computed(() => {
+    if (!shouldShowAllProjectsForFilter.value) {
+        return '';
+    }
+
+    return t('labels.noSpecificProjectForSkill', {
+        skill: selectedTechnologyNames.value,
+    });
 });
 
 const filteredProjects = computed(() => {
@@ -58,11 +158,11 @@ const filteredProjects = computed(() => {
         return content.value.projects;
     }
 
-    return content.value.projects.filter((project) =>
-        project.stack.some((technology) =>
-            selectedTechnologyCodes.value.has(normalizeTechnology(technology)),
-        ),
-    );
+    if (shouldShowAllProjectsForFilter.value) {
+        return content.value.projects;
+    }
+
+    return matchedProjects.value;
 });
 
 const publicProjects = computed(() =>
@@ -75,12 +175,6 @@ const personalProjects = computed(() =>
     ),
 );
 
-const activeProject = computed(() => {
-    return content.value.projects.find(
-        (project) => project.slug === activeProjectSlug.value,
-    );
-});
-
 const hasSelections = computed(() => selectedTechnologies.value.length > 0);
 
 const removeTechnology = (technology: TechnologyOption) => {
@@ -89,57 +183,85 @@ const removeTechnology = (technology: TechnologyOption) => {
     );
 };
 
-const openProjectStory = async (project: ProjectItem) => {
-    activeProjectSlug.value = project.slug;
-
-    await nextTick();
-
-    storySection.value?.scrollIntoView({
-        behavior: 'smooth',
-        block: 'start',
+const openProjectStory = (project: ProjectItem) => {
+    router.push({
+        name: 'project-story',
+        params: {
+            slug: project.slug,
+        },
     });
 };
 
 watch(
-    () => content.value.projects,
-    (projects) => {
+    [() => route.query.skill, technologyOptions],
+    () => {
+        const routeSkillCodes = getNormalizedQueryValues(route.query.skill);
+
         if (
-            activeProjectSlug.value &&
-            !projects.some(
-                (project) => project.slug === activeProjectSlug.value,
-            )
+            areStringArraysEqual(getSelectedTechnologyCodes(), routeSkillCodes)
         ) {
-            activeProjectSlug.value = null;
+            return;
         }
+
+        selectedTechnologies.value =
+            resolveTechnologySelections(routeSkillCodes);
     },
+    { immediate: true },
+);
+
+watch(
+    selectedTechnologies,
+    () => {
+        const selectedCodes = getSelectedTechnologyCodes();
+        const routeSkillCodes = getNormalizedQueryValues(route.query.skill);
+
+        if (areStringArraysEqual(selectedCodes, routeSkillCodes)) {
+            return;
+        }
+
+        const query = { ...route.query };
+
+        if (selectedCodes.length > 0) {
+            query.skill =
+                selectedCodes.length === 1 ? selectedCodes[0] : selectedCodes;
+        } else {
+            delete query.skill;
+        }
+
+        router.replace({
+            name: 'projects',
+            query,
+        });
+    },
+    { deep: true },
 );
 </script>
 
 <template>
-    <section class="px-5 lg:px-12 py-12 lg:py-16">
+    <section class="px-5 py-12 lg:px-12 lg:py-16">
         <div class="mx-auto max-w-7xl">
             <p
-                class="font-semibold text-sky-700 text-sm uppercase tracking-normal"
+                class="text-sm font-semibold tracking-normal text-sky-700 uppercase"
             >
                 {{ t('pages.projects.eyebrow') }}
             </p>
             <h1
-                class="mt-4 max-w-4xl font-semibold text-slate-950 text-4xl sm:text-5xl tracking-normal"
+                class="mt-4 max-w-4xl text-4xl font-semibold tracking-normal text-slate-950 sm:text-5xl"
             >
                 {{ t('pages.projects.title') }}
             </h1>
-            <p class="mt-5 max-w-3xl text-slate-600 text-lg leading-8">
+            <p class="mt-5 max-w-3xl text-lg leading-8 text-slate-600">
                 {{ t('pages.projects.intro') }}
             </p>
         </div>
     </section>
 
-    <section class="px-5 lg:px-12 pb-14">
-        <div class="space-y-10 mx-auto max-w-7xl">
+    <section class="px-5 pb-14 lg:px-12">
+        <div class="mx-auto max-w-7xl space-y-10">
             <div
-                class="bg-white shadow-sm border border-slate-200 rounded-lg overflow-hidden"
+                class="overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm"
             >
-                <div class="bg-slate-50 p-4 border-slate-200 border-b">
+                <div class="border-b border-slate-200 bg-slate-50 p-4">
                     <div
                         v-if="hasSelections"
                         class="flex flex-wrap items-start gap-3"
@@ -152,7 +274,7 @@ watch(
                             @remove="removeTechnology(technology)"
                         />
                     </div>
-                    <p v-else class="text-slate-500 text-sm leading-6">
+                    <p v-else class="text-sm leading-6 text-slate-500">
                         {{ t('labels.selectTechnologiesToFilter') }}
                     </p>
                 </div>
@@ -167,17 +289,26 @@ watch(
                         class="w-full md:w-72"
                     />
                 </div>
+
+                <Message
+                    v-if="filterNoticeMessage"
+                    class="mx-4 mb-4"
+                    severity="secondary"
+                    :closable="false"
+                >
+                    {{ filterNoticeMessage }}
+                </Message>
             </div>
 
             <section class="space-y-5">
                 <div class="flex flex-col gap-4">
                     <div class="flex flex-wrap items-center gap-4">
                         <h2
-                            class="font-semibold text-slate-950 text-xl leading-tight tracking-normal"
+                            class="text-xl leading-tight font-semibold tracking-normal text-slate-950"
                         >
                             {{ t('labels.publicProjects') }}
                         </h2>
-                        <span class="text-slate-500 text-base leading-tight">
+                        <span class="text-base leading-tight text-slate-500">
                             {{
                                 t('labels.projectCount', {
                                     count: publicProjects.length,
@@ -185,12 +316,12 @@ watch(
                             }}
                         </span>
                     </div>
-                    <div class="border-slate-200 border-b" />
+                    <div class="border-b border-slate-200" />
                 </div>
 
                 <div
                     v-if="publicProjects.length"
-                    class="gap-6 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3"
+                    class="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3"
                 >
                     <ProjectCard
                         v-for="project in publicProjects"
@@ -199,7 +330,7 @@ watch(
                         @open-story="openProjectStory"
                     />
                 </div>
-                <p v-else class="text-slate-500 text-sm leading-6">
+                <p v-else class="text-sm leading-6 text-slate-500">
                     {{ t('labels.noMatchingProjects') }}
                 </p>
             </section>
@@ -208,11 +339,11 @@ watch(
                 <div class="flex flex-col gap-4">
                     <div class="flex flex-wrap items-center gap-4">
                         <h2
-                            class="font-semibold text-slate-950 text-xl leading-tight tracking-normal"
+                            class="text-xl leading-tight font-semibold tracking-normal text-slate-950"
                         >
                             {{ t('labels.personalProjects') }}
                         </h2>
-                        <span class="text-slate-500 text-base leading-tight">
+                        <span class="text-base leading-tight text-slate-500">
                             {{
                                 t('labels.projectCount', {
                                     count: personalProjects.length,
@@ -220,12 +351,12 @@ watch(
                             }}
                         </span>
                     </div>
-                    <div class="border-slate-200 border-b" />
+                    <div class="border-b border-slate-200" />
                 </div>
 
                 <div
                     v-if="personalProjects.length"
-                    class="gap-6 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3"
+                    class="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3"
                 >
                     <ProjectCard
                         v-for="project in personalProjects"
@@ -234,17 +365,9 @@ watch(
                         @open-story="openProjectStory"
                     />
                 </div>
-                <p v-else class="text-slate-500 text-sm leading-6">
+                <p v-else class="text-sm leading-6 text-slate-500">
                     {{ t('labels.noMatchingProjects') }}
                 </p>
-            </section>
-
-            <section
-                v-if="activeProject"
-                ref="storySection"
-                class="pt-2 scroll-mt-24"
-            >
-                <ProjectStory :project="activeProject" />
             </section>
         </div>
     </section>

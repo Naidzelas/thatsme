@@ -2,12 +2,20 @@
 import Button from 'primevue/button';
 import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { useRouter } from 'vue-router';
 
 import KeywordSphere from '@/components/KeywordSphere.vue';
 import { usePortfolio } from '@/composables/usePortfolio';
 import { portfolioIdentity } from '@/data/portfolio';
+import { normalizeTechnology } from '@/lib/utils';
+
+interface SkillFilterPayload {
+    label: string;
+    filterCode?: string;
+}
 
 const { t } = useI18n({ useScope: 'global' });
+const router = useRouter();
 const { content } = usePortfolio();
 
 const emailHref = `mailto:${portfolioIdentity.email}`;
@@ -21,6 +29,15 @@ const avatarInitials = computed(() =>
         .slice(0, 2)
         .toUpperCase(),
 );
+
+const filterProjectsBySkill = (skill: SkillFilterPayload) => {
+    router.push({
+        name: 'projects',
+        query: {
+            skill: normalizeTechnology(skill.filterCode ?? skill.label),
+        },
+    });
+};
 </script>
 
 <template>
@@ -105,7 +122,10 @@ const avatarInitials = computed(() =>
                     <h2 id="home-sphere-title" class="sr-only">
                         {{ t('pages.home.sphereTitle') }}
                     </h2>
-                    <KeywordSphere :groups="content.home.keywordGroups" />
+                    <KeywordSphere
+                        :groups="content.home.keywordGroups"
+                        @filter-skill="filterProjectsBySkill"
+                    />
                 </section>
             </div>
         </div>

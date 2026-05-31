@@ -1,10 +1,20 @@
 <script setup lang="ts">
+import Button from 'primevue/button';
+import Dialog from 'primevue/dialog';
 import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
 
 import type { KeywordGroup, KeywordGroupTone } from '@/data/portfolio';
 
+interface SkillFilterPayload {
+    label: string;
+    filterCode?: string;
+}
+
 interface MeshNode {
     label: string;
+    description: string;
+    filterCode?: string;
     groupTitle: string;
     itemIndex: number;
     nodeIndex: number;
@@ -28,9 +38,34 @@ interface ProjectedNode extends MeshNode {
     screenY: number;
 }
 
+interface NodeHitArea {
+    nodeIndex: number;
+    depth: number;
+    height: number;
+    screenX: number;
+    screenY: number;
+    searchOpacity: number;
+    width: number;
+}
+
+interface RotationState {
+    x: number;
+    y: number;
+    isTargeting: boolean;
+    lastTimestamp: number | null;
+    targetX: number;
+    targetY: number;
+}
+
 const props = defineProps<{
     groups: KeywordGroup[];
 }>();
+
+const emit = defineEmits<{
+    'filter-skill': [payload: SkillFilterPayload];
+}>();
+
+const { t } = useI18n({ useScope: 'global' });
 
 const tonePalette: Record<
     KeywordGroupTone,
@@ -52,8 +87,20 @@ const tonePalette: Record<
 const canvasRef = ref<HTMLCanvasElement | null>(null);
 const prefersReducedMotion = ref(false);
 const searchQuery = ref('');
+const selectedNodeIndex = ref<number | null>(null);
+const isSkillDialogVisible = ref(false);
+
+const rotationState: RotationState = {
+    x: 0.18,
+    y: -0.54,
+    isTargeting: false,
+    lastTimestamp: null,
+    targetX: 0.18,
+    targetY: -0.54,
+};
 
 let animationFrameId = 0;
+let latestHitAreas: NodeHitArea[] = [];
 let motionMediaQuery: MediaQueryList | null = null;
 let resizeObserver: ResizeObserver | null = null;
 
@@ -74,7 +121,7 @@ const getSearchOpacity = (node: MeshNode) => {
     }
 
     const searchableText =
-        `${node.label} ${node.groupTitle}`.toLocaleLowerCase();
+        `${node.label} ${node.groupTitle} ${node.description}`.toLocaleLowerCase();
 
     return searchableText.includes(query) ? 1 : 0.14;
 };
@@ -92,7 +139,7 @@ const meshNodes = computed<MeshNode[]>(() => {
     const groupOffsetStep = props.groups.length > 1 ? 0.48 : 0;
 
     return props.groups.flatMap((group, groupIndex) =>
-        group.items.map((label, itemIndex) => {
+        group.items.map((item, itemIndex) => {
             const nodeIndex = props.groups
                 .slice(0, groupIndex)
                 .reduce(
@@ -109,7 +156,9 @@ const meshNodes = computed<MeshNode[]>(() => {
                 Math.sqrt(totalItems * Math.PI) * verticalAngle + groupOffset;
 
             return {
-                label,
+                label: item.label,
+                description: item.description,
+                filterCode: item.filterCode,
                 groupTitle: group.title,
                 itemIndex,
                 nodeIndex,
@@ -121,6 +170,20 @@ const meshNodes = computed<MeshNode[]>(() => {
         }),
     );
 });
+
+const selectedNode = computed(() => {
+    const nodeIndex = selectedNodeIndex.value;
+
+    if (nodeIndex === null) {
+        return null;
+    }
+
+    return meshNodes.value.find((node) => node.nodeIndex === nodeIndex) ?? null;
+});
+
+const canFilterSelectedSkill = computed(
+    () => selectedNode.value?.tone === 'software',
+);
 
 const meshConnections = computed<MeshConnection[]>(() => {
     const connections: MeshConnection[] = [];
@@ -170,8 +233,12 @@ const meshConnections = computed<MeshConnection[]>(() => {
     return connections;
 });
 
-const accessibleGroups = computed(() =>
-    props.groups.map((group) => `${group.title}: ${group.items.join(', ')}`),
+const accessibleSkills = computed(() =>
+    meshNodes.value.map((node) => ({
+        key: `${node.groupTitle}-${node.label}`,
+        label: `${node.label}. ${node.groupTitle}. ${node.description}`,
+        nodeIndex: node.nodeIndex,
+    })),
 );
 
 const drawRoundedRect = (
@@ -245,20 +312,93 @@ const prepareCanvas = (canvas: HTMLCanvasElement) => {
     };
 };
 
+const getShortestAngleDelta = (currentAngle: number, targetAngle: number) =>
+    Math.atan2(
+        Math.sin(targetAngle - currentAngle),
+        Math.cos(targetAngle - currentAngle),
+    );
+
+const getClosestRotationAngle = (currentAngle: number, targetAngle: number) =>
+    currentAngle + getShortestAngleDelta(currentAngle, targetAngle);
+
+const updateRotation = (timestamp: number) => {
+    if (rotationState.lastTimestamp === null) {
+        rotationState.lastTimestamp = timestamp;
+    }
+
+    const elapsedTime = Math.min(timestamp - rotationState.lastTimestamp, 64);
+    rotationState.lastTimestamp = timestamp;
+
+    if (selectedNodeIndex.value !== null) {
+        if (!rotationState.isTargeting || prefersReducedMotion.value) {
+            rotationState.x = rotationState.targetX;
+            rotationState.y = rotationState.targetY;
+            rotationState.isTargeting = false;
+
+            return;
+        }
+
+        const easing = Math.min(1, elapsedTime / 220);
+        const xDelta = getShortestAngleDelta(
+            rotationState.x,
+            rotationState.targetX,
+        );
+        const yDelta = getShortestAngleDelta(
+            rotationState.y,
+            rotationState.targetY,
+        );
+
+        rotationState.x += xDelta * easing;
+        rotationState.y += yDelta * easing;
+
+        if (Math.abs(xDelta) < 0.002 && Math.abs(yDelta) < 0.002) {
+            rotationState.x = rotationState.targetX;
+            rotationState.y = rotationState.targetY;
+            rotationState.isTargeting = false;
+        }
+
+        return;
+    }
+
+    rotationState.isTargeting = false;
+
+    if (prefersReducedMotion.value) {
+        rotationState.x = 0.18;
+        rotationState.y = -0.54;
+
+        return;
+    }
+
+    rotationState.y += elapsedTime * 0.00013;
+    rotationState.x = 0.18 + Math.sin(timestamp * 0.00018) * 0.07;
+};
+
+const setRotationTargetForNode = (node: MeshNode) => {
+    const horizontalDistance = Math.hypot(node.x, node.z);
+    const targetY = Math.atan2(-node.x, node.z);
+    const targetX = Math.atan2(node.y, horizontalDistance);
+
+    rotationState.targetX = getClosestRotationAngle(rotationState.x, targetX);
+    rotationState.targetY = getClosestRotationAngle(rotationState.y, targetY);
+    rotationState.isTargeting = !prefersReducedMotion.value;
+
+    if (prefersReducedMotion.value) {
+        rotationState.x = rotationState.targetX;
+        rotationState.y = rotationState.targetY;
+    }
+};
+
 const projectNodes = (
     canvasWidth: number,
     canvasHeight: number,
-    timestamp: number,
 ): ProjectedNode[] => {
     const size = Math.min(canvasWidth, canvasHeight);
     const radius = size * 0.34;
     const perspective = size * 1.18;
     const centerX = canvasWidth / 2;
     const centerY = canvasHeight / 2;
-    const rotationY = prefersReducedMotion.value ? -0.54 : timestamp * 0.00013;
-    const rotationX = prefersReducedMotion.value
-        ? 0.18
-        : 0.18 + Math.sin(timestamp * 0.00018) * 0.07;
+    const rotationY = rotationState.y;
+    const rotationX = rotationState.x;
     const cosY = Math.cos(rotationY);
     const sinY = Math.sin(rotationY);
     const cosX = Math.cos(rotationX);
@@ -300,16 +440,34 @@ const drawMesh = (timestamp: number) => {
     }
 
     const { context, height, width } = preparedCanvas;
+    updateRotation(timestamp);
+
     const size = Math.min(width, height);
     const centerX = width / 2;
     const centerY = height / 2;
     const sphereRadius = size * 0.39;
-    const projectedNodes = projectNodes(width, height, timestamp);
+    const projectedNodes = projectNodes(width, height);
     const orderedNodes = [...projectedNodes].sort(
         (firstNode, secondNode) => firstNode.depth - secondNode.depth,
     );
+    const selectedIndex = selectedNodeIndex.value;
+    const selectedProjectedNode =
+        selectedIndex === null
+            ? null
+            : (projectedNodes.find(
+                  (node) => node.nodeIndex === selectedIndex,
+              ) ?? null);
+    const drawableNodes = selectedProjectedNode
+        ? [
+              ...orderedNodes.filter(
+                  (node) => node.nodeIndex !== selectedProjectedNode.nodeIndex,
+              ),
+              selectedProjectedNode,
+          ]
+        : orderedNodes;
 
     context.clearRect(0, 0, width, height);
+    latestHitAreas = [];
 
     context.save();
     context.strokeStyle = 'rgba(15, 23, 42, 0.08)';
@@ -368,12 +526,14 @@ const drawMesh = (timestamp: number) => {
 
     context.restore();
 
-    orderedNodes.forEach((node) => {
+    drawableNodes.forEach((node) => {
         const palette = getTonePalette(node.tone);
         const labelHeight = 23;
+        const isSelected = node.nodeIndex === selectedIndex;
+        const searchOpacity = getSearchOpacity(node);
 
         context.save();
-        context.globalAlpha = node.opacity * getSearchOpacity(node);
+        context.globalAlpha = isSelected ? 1 : node.opacity * searchOpacity;
         context.translate(node.screenX, node.screenY);
         context.scale(node.scale, node.scale);
         context.font = labelFont;
@@ -385,9 +545,19 @@ const drawMesh = (timestamp: number) => {
             Math.ceil(context.measureText(node.label).width) + 20,
         );
 
-        context.shadowColor = `rgba(${palette.rgb}, ${0.14 + node.depth * 0.12})`;
-        context.shadowBlur = 18;
-        context.fillStyle = `rgba(${palette.rgb}, ${0.1 + node.depth * 0.06})`;
+        latestHitAreas.push({
+            nodeIndex: node.nodeIndex,
+            depth: isSelected ? 2 : node.depth,
+            height: labelHeight * node.scale + 8,
+            screenX: node.screenX,
+            screenY: node.screenY,
+            searchOpacity,
+            width: labelWidth * node.scale + 8,
+        });
+
+        context.shadowColor = `rgba(${palette.rgb}, ${isSelected ? 0.34 : 0.14 + node.depth * 0.12})`;
+        context.shadowBlur = isSelected ? 28 : 18;
+        context.fillStyle = `rgba(${palette.rgb}, ${isSelected ? 0.2 : 0.1 + node.depth * 0.06})`;
         drawRoundedRect(
             context,
             -labelWidth / 2,
@@ -399,8 +569,8 @@ const drawMesh = (timestamp: number) => {
         context.fill();
 
         context.shadowBlur = 0;
-        context.strokeStyle = `rgba(${palette.rgb}, ${0.28 + node.depth * 0.34})`;
-        context.lineWidth = 1;
+        context.strokeStyle = `rgba(${palette.rgb}, ${isSelected ? 0.95 : 0.28 + node.depth * 0.34})`;
+        context.lineWidth = isSelected ? 1.8 : 1;
         context.stroke();
 
         context.fillStyle = palette.solid;
@@ -409,12 +579,97 @@ const drawMesh = (timestamp: number) => {
     });
 };
 
+const shouldIgnoreDimmedSearchResult = (hitArea: NodeHitArea) => {
+    return Boolean(normalizedSearchQuery.value) && hitArea.searchOpacity < 0.5;
+};
+
+const selectSkillNode = (nodeIndex: number) => {
+    const node = meshNodes.value.find(
+        (currentNode) => currentNode.nodeIndex === nodeIndex,
+    );
+
+    if (!node) {
+        return;
+    }
+
+    selectedNodeIndex.value = node.nodeIndex;
+    isSkillDialogVisible.value = true;
+    setRotationTargetForNode(node);
+    rotationState.lastTimestamp = null;
+    queueFrame();
+};
+
+const handleCanvasPointerDown = (event: PointerEvent) => {
+    const canvas = canvasRef.value;
+
+    if (!canvas) {
+        return;
+    }
+
+    const bounds = canvas.getBoundingClientRect();
+    const pointerX = event.clientX - bounds.left;
+    const pointerY = event.clientY - bounds.top;
+    const hitArea = latestHitAreas
+        .filter((area) => {
+            if (shouldIgnoreDimmedSearchResult(area)) {
+                return false;
+            }
+
+            const halfWidth = area.width / 2;
+            const halfHeight = area.height / 2;
+
+            return (
+                pointerX >= area.screenX - halfWidth &&
+                pointerX <= area.screenX + halfWidth &&
+                pointerY >= area.screenY - halfHeight &&
+                pointerY <= area.screenY + halfHeight
+            );
+        })
+        .sort((first, second) => second.depth - first.depth)[0];
+
+    if (!hitArea) {
+        return;
+    }
+
+    selectSkillNode(hitArea.nodeIndex);
+};
+
+const closeSkillDialog = () => {
+    isSkillDialogVisible.value = false;
+    selectedNodeIndex.value = null;
+    rotationState.isTargeting = false;
+    rotationState.lastTimestamp = null;
+    queueFrame();
+};
+
+const filterSelectedSkill = () => {
+    const node = selectedNode.value;
+
+    if (!node || node.tone !== 'software') {
+        return;
+    }
+
+    emit('filter-skill', {
+        label: node.label,
+        filterCode: node.filterCode,
+    });
+    closeSkillDialog();
+};
+
+const shouldContinueAnimating = () => {
+    if (prefersReducedMotion.value) {
+        return false;
+    }
+
+    return selectedNodeIndex.value === null || rotationState.isTargeting;
+};
+
 const queueFrame = () => {
     window.cancelAnimationFrame(animationFrameId);
     animationFrameId = window.requestAnimationFrame((timestamp) => {
         drawMesh(timestamp);
 
-        if (!prefersReducedMotion.value) {
+        if (shouldContinueAnimating()) {
             queueFrame();
         }
     });
@@ -422,6 +677,12 @@ const queueFrame = () => {
 
 const handleMotionPreferenceChange = () => {
     prefersReducedMotion.value = motionMediaQuery?.matches ?? false;
+
+    if (selectedNode.value) {
+        setRotationTargetForNode(selectedNode.value);
+    }
+
+    rotationState.lastTimestamp = null;
     queueFrame();
 };
 
@@ -431,11 +692,7 @@ onMounted(() => {
     motionMediaQuery.addEventListener('change', handleMotionPreferenceChange);
 
     if (canvasRef.value) {
-        resizeObserver = new ResizeObserver(() => {
-            if (prefersReducedMotion.value) {
-                queueFrame();
-            }
-        });
+        resizeObserver = new ResizeObserver(() => queueFrame());
         resizeObserver.observe(canvasRef.value);
     }
 
@@ -453,17 +710,25 @@ onBeforeUnmount(() => {
 
 watch(
     () => props.groups,
-    () => queueFrame(),
+    () => {
+        isSkillDialogVisible.value = false;
+        selectedNodeIndex.value = null;
+        rotationState.isTargeting = false;
+        rotationState.lastTimestamp = null;
+        queueFrame();
+    },
     { deep: true },
 );
 
-watch(searchQuery, () => queueFrame());
+watch(searchQuery, () => {
+    queueFrame();
+});
 </script>
 
 <template>
-    <div class="keyword-sphere" aria-label="Technology keyword mesh">
+    <div class="keyword-sphere" :aria-label="t('labels.skillSphere')">
         <label class="keyword-sphere__search">
-            <span class="sr-only">Search skills</span>
+            <span class="sr-only">{{ t('labels.searchSkills') }}</span>
             <i
                 class="pi pi-search keyword-sphere__search-icon"
                 aria-hidden="true"
@@ -472,7 +737,7 @@ watch(searchQuery, () => queueFrame());
                 v-model="searchQuery"
                 class="keyword-sphere__search-input"
                 type="search"
-                placeholder="Search skills"
+                :placeholder="t('labels.searchSkills')"
                 autocomplete="off"
             />
         </label>
@@ -481,6 +746,7 @@ watch(searchQuery, () => queueFrame());
             ref="canvasRef"
             class="keyword-sphere__canvas"
             aria-hidden="true"
+            @pointerdown="handleCanvasPointerDown"
         />
 
         <ul class="keyword-sphere__legend" aria-label="Skill groups">
@@ -496,11 +762,43 @@ watch(searchQuery, () => queueFrame());
             </li>
         </ul>
 
-        <ul class="sr-only">
-            <li v-for="group in accessibleGroups" :key="group">
-                {{ group }}
+        <ul class="sr-only" :aria-label="t('labels.skillSphere')">
+            <li v-for="skill in accessibleSkills" :key="skill.key">
+                <button type="button" @click="selectSkillNode(skill.nodeIndex)">
+                    {{ skill.label }}
+                </button>
             </li>
         </ul>
+
+        <Dialog
+            v-model:visible="isSkillDialogVisible"
+            class="keyword-sphere__dialog"
+            :draggable="false"
+            :header="selectedNode?.label"
+            :modal="false"
+            :style="{ width: 'min(92vw, 28rem)' }"
+            @hide="closeSkillDialog"
+        >
+            <div v-if="selectedNode" class="keyword-sphere__dialog-body">
+                <p class="keyword-sphere__dialog-kicker">
+                    {{ t('labels.skillGroup') }} / {{ selectedNode.groupTitle }}
+                </p>
+                <p class="keyword-sphere__dialog-copy">
+                    {{ selectedNode.description }}
+                </p>
+                <Button
+                    v-if="canFilterSelectedSkill"
+                    class="keyword-sphere__dialog-action"
+                    icon="pi pi-filter"
+                    :label="
+                        t('actions.viewProjectsWithSkill', {
+                            skill: selectedNode.label,
+                        })
+                    "
+                    @click="filterSelectedSkill"
+                />
+            </div>
+        </Dialog>
     </div>
 </template>
 
@@ -562,6 +860,8 @@ watch(searchQuery, () => queueFrame());
     width: min(100%, 32rem);
     height: min(100%, 32rem);
     aspect-ratio: 1;
+    cursor: pointer;
+    touch-action: manipulation;
 }
 
 .keyword-sphere__legend {
@@ -594,6 +894,31 @@ watch(searchQuery, () => queueFrame());
     box-shadow: 0 0 0 0.22rem rgba(15, 23, 42, 0.05);
 }
 
+.keyword-sphere__dialog-body {
+    display: grid;
+    gap: 1rem;
+}
+
+.keyword-sphere__dialog-kicker {
+    margin: 0;
+    color: #0369a1;
+    font-size: 0.78rem;
+    font-weight: 800;
+    letter-spacing: 0;
+    text-transform: uppercase;
+}
+
+.keyword-sphere__dialog-copy {
+    margin: 0;
+    color: #334155;
+    font-size: 0.98rem;
+    line-height: 1.7;
+}
+
+.keyword-sphere__dialog-action {
+    justify-self: start;
+}
+
 @media (max-width: 520px) {
     .keyword-sphere {
         min-height: 28rem;
@@ -614,6 +939,10 @@ watch(searchQuery, () => queueFrame());
     .keyword-sphere__search-input {
         min-height: 2.5rem;
         font-size: 0.84rem;
+    }
+
+    .keyword-sphere__dialog-action {
+        width: 100%;
     }
 }
 </style>
