@@ -1,9 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router';
 
-import Experience from '@/pages/Experience.vue';
-import Home from '@/pages/Home.vue';
-import Projects from '@/pages/Projects.vue';
-
 const appName = import.meta.env.VITE_APP_NAME || 'Trimzales';
 
 const router = createRouter({
@@ -12,7 +8,7 @@ const router = createRouter({
         {
             path: '/',
             name: 'home',
-            component: Home,
+            component: () => import('@/pages/Home.vue'),
             meta: {
                 title: 'CV',
             },
@@ -20,7 +16,7 @@ const router = createRouter({
         {
             path: '/experience',
             name: 'experience',
-            component: Experience,
+            component: () => import('@/pages/Experience.vue'),
             meta: {
                 title: 'Work Experience',
             },
@@ -28,9 +24,17 @@ const router = createRouter({
         {
             path: '/projects',
             name: 'projects',
-            component: Projects,
+            component: () => import('@/pages/Projects.vue'),
             meta: {
                 title: 'Projects',
+            },
+        },
+        {
+            path: '/projects/:slug',
+            name: 'project-story',
+            component: () => import('@/pages/ProjectStoryPage.vue'),
+            meta: {
+                title: 'Project Story',
             },
         },
         {
