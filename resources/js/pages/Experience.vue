@@ -31,11 +31,24 @@ const { content } = usePortfolio();
         <div class="space-y-5 mx-auto max-w-7xl">
             <article
                 v-for="item in content.experience"
-                :key="`${item.role}-${item.period}`"
-                class="gap-6 grid lg:grid-cols-[16rem_minmax(0,1fr)] bg-white shadow-sm p-6 border border-slate-200 rounded-lg"
+                :key="`${item.company}-${item.role}-${item.period}`"
+                class="gap-6 grid lg:grid-cols-[18rem_minmax(0,1fr)] bg-white shadow-sm p-6 border border-slate-200 rounded-lg"
             >
                 <div>
-                    <p class="font-semibold text-sky-700 text-sm">
+                    <div class="flex items-center gap-4 min-h-16">
+                        <img
+                            v-if="item.logoUrl"
+                            :src="item.logoUrl"
+                            :alt="`${item.company} logo`"
+                            class="border border-slate-200 rounded-md size-16 object-contain"
+                        />
+                        <div>
+                            <p class="font-semibold text-slate-950 text-lg">
+                                {{ item.company }}
+                            </p>
+                        </div>
+                    </div>
+                    <p class="mt-4 font-semibold text-sky-700 text-sm">
                         {{ item.period }}
                     </p>
                     <h2

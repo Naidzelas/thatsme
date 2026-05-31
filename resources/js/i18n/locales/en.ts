@@ -1,20 +1,23 @@
 export default {
     app: {
-        name: 'Trimzales',
-        openMenu: 'Open navigation',
-        closeMenu: 'Close navigation',
+        name: 'Naidželas Benetis',
+        title: 'Full-stack developer building useful web systems.',
+        intro: 'I build practical products with Laravel, Vue, TypeScript, AI, and other technologies.',
         language: 'Language',
-        contact: 'Contact',
+        sphereTitle: 'Tools I use',
         updatedAt: 'Updated at {date}',
     },
     nav: {
         home: 'Home',
         experience: 'Experience',
+        intro: 'I adapt quickly to new technologies and responsibilities, so my experience spans various roles, technologies, and areas of ownership.',
         projects: 'Projects',
     },
     actions: {
         viewExperience: 'View experience',
         viewProjects: 'View projects',
+        sendEmail: 'Email',
+        openSocial: 'Open {platform}',
         previous: 'Previous',
         next: 'Next',
     },
@@ -25,14 +28,14 @@ export default {
         home: {
             eyebrow: 'Personal CV',
             title: 'Full-stack developer focused on useful web systems.',
-            intro: 'I build practical products with Laravel, Vue, TypeScript, and AI-assisted workflows. This site is structured as a compact CV, project index, and place to keep the work current.',
+            intro: 'I create practical products with Laravel, Vue, TypeScript, AI, and other technologies.',
             skillsTitle: 'Current stack',
             sphereTitle: 'Tools I reach for',
         },
         experience: {
             eyebrow: 'Work experience',
             title: 'Experience shaped around delivery, clarity, and maintainable systems.',
-            intro: 'Use this page as the editable timeline for roles, responsibilities, technologies, and measurable outcomes.',
+            intro: 'I adapt quickly to new technologies and responsibilities, so my experience spans various roles, technologies, and areas of ownership.',
         },
         projects: {
             eyebrow: 'Projects',

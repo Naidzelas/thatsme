@@ -1,5 +1,8 @@
 /.phpunit.cache
 /bootstrap/ssr
+/coverage
+/dist
+/dist-ssr
 /node_modules
 /public/build
 /public/fonts-manifest.dev.json
@@ -19,10 +22,13 @@
 Homestead.json
 Homestead.yaml
 npm-debug.log
+pnpm-debug.log
 yarn-error.log
+*.tsbuildinfo
 /auth.json
 /.fleet
 /.idea
 /.nova
 /.vscode
 /.zed
+/docs

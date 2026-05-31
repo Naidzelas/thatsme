@@ -1,8 +1,10 @@
 import type { LocaleCode } from '@/i18n';
 
 export interface ExperienceItem {
+    company: string;
     role: string;
     period: string;
+    logoUrl?: string;
     summary: string;
     highlights: string[];
     stack: string[];
@@ -24,6 +26,29 @@ export interface ProjectItem {
     steps: ProjectStep[];
 }
 
+export interface PortfolioSocialLink {
+    label: string;
+    icon: string;
+    url: string;
+}
+
+export interface PortfolioIdentity {
+    fullName: string;
+    city: string;
+    email: string;
+    avatarUrl: string;
+    coverImageUrl: string;
+    socialLinks: PortfolioSocialLink[];
+}
+
+export type KeywordGroupTone = 'software' | 'engineering';
+
+export interface KeywordGroup {
+    title: string;
+    tone: KeywordGroupTone;
+    items: string[];
+}
+
 export interface PortfolioContent {
     home: {
         focusCards: Array<{
@@ -35,13 +60,86 @@ export interface PortfolioContent {
             title: string;
             items: string[];
         }>;
-        keywords: string[];
+        keywordGroups: KeywordGroup[];
     };
     experience: ExperienceItem[];
     projects: ProjectItem[];
 }
 
 export const lastUpdatedAt = '2026-05-31T00:00:00.000Z';
+
+const publicAssetUrl = (path: string) => `${import.meta.env.BASE_URL}${path}`;
+
+const softwareEngineeringSkills = [
+    'Laravel',
+    'VueJS',
+    'TypeScript',
+    'JavaScript',
+    'MySQL',
+    'MSSQL',
+    'SQLite',
+    'PHP',
+    'JQuery',
+    'Tailwind CSS',
+    'Kubernetes',
+    'Tekton',
+    'Harbor',
+    'Python',
+    'Computer Vision',
+    'HTML',
+    'CSS',
+    'Git',
+    'REST API',
+    'PrimeVue',
+    'WordPress',
+    'Canias ERP',
+    'Proxmox',
+    'TrueNAS Scale',
+    'Ollama',
+    'AI',
+    'LLM',
+    'CI/CD',
+    'IIS',
+    'NodeJS',
+    'Redis',
+    'DevOps',
+];
+
+const engineeringSkills = [
+    'Applanix PosPac',
+    'YellowScan CS',
+    'CloudCompare',
+    'TerraSolid',
+    'LiDAR',
+    'AutoCAD',
+    'Photogrammetry',
+    'Topography',
+    'Point Cloud',
+    'Land Surverying',
+    'Construction Surverying',
+    'Powerlines',
+    'Wind farms',
+];
+
+export const portfolioIdentity: PortfolioIdentity = {
+    fullName: 'Naidželas Benetis',
+    city: 'Klaipėda',
+    email: 'naidzelas.benetis@gmail.com',
+    avatarUrl: publicAssetUrl('images/DSC_1482.jpg'),
+    coverImageUrl: publicAssetUrl('images/background-cliped.jpg'),
+    socialLinks: [
+        {
+            label: 'GitHub',
+            icon: 'pi pi-github',
+            url: 'https://github.com/Naidzelas',
+        },
+        {
+            label: 'LinkedIn',
+            icon: 'pi pi-linkedin',
+            url: 'https://www.linkedin.com/in/naidzelas-benetis/',
+        },
+    ],
+};
 
 export const portfolioContent: Record<LocaleCode, PortfolioContent> = {
     en: {
@@ -77,55 +175,85 @@ export const portfolioContent: Record<LocaleCode, PortfolioContent> = {
                     items: ['AI tooling', 'Python', 'SQL', 'GitHub Actions'],
                 },
             ],
-            keywords: [
-                'AI',
-                'Laravel',
-                'PHP',
-                'Vue',
-                'TypeScript',
-                'Python',
-                'SQL',
-                'APIs',
-                'Tailwind',
-                'PrimeVue',
-                'GitHub',
-                'Automation',
-                'Testing',
-                'Inertia',
-                'Vite',
-                'UX',
+            keywordGroups: [
+                {
+                    title: 'Software engineering',
+                    tone: 'software',
+                    items: softwareEngineeringSkills,
+                },
+                {
+                    title: 'Engineering',
+                    tone: 'engineering',
+                    items: engineeringSkills,
+                },
             ],
         },
         experience: [
             {
-                role: 'Full-stack web developer',
-                period: 'Current focus',
+                company: 'AB Klaipėdos pienas',
+                role: 'IT systems analyst',
+                period: 'Current',
+                logoUrl: publicAssetUrl('images/dione_logo.jpg'),
                 summary:
-                    'Building Laravel and Vue applications with practical automation, clean data flows, and maintainable interfaces.',
+                    'Full-stack development, process optimization, and migration of Excel-based solutions into a web environment.',
                 highlights: [
-                    'Shape application features from backend models through user-facing screens.',
-                    'Turn repetitive operational work into clear workflows and reusable tools.',
-                    'Use TypeScript and component structure to keep frontend behavior predictable.',
+                    'Building an application for hosting business-management tools using Laravel, Vue, Inertia, and TypeScript.',
+                    'Preparing database data structures, API integrations, and support for legacy logic.',
+                    'Handling DevOps responsibilities to optimize application development and maintenance workflows.',
                 ],
                 stack: [
                     'Laravel',
                     'Vue',
                     'TypeScript',
-                    'MySQL',
-                    'Tailwind CSS',
+                    'PHP',
+                    'MSSQL',
+                    'CI/CD',
+                    'Bash',
+                    'REST API',
+                    'DevOps',
                 ],
             },
             {
-                role: 'Automation and AI-assisted tooling',
-                period: 'Ongoing',
+                company: 'UAB Vlantana',
+                role: 'Programmer',
+                period: 'Previous experience',
+                logoUrl: publicAssetUrl('images/vlantana_logo.jpg'),
                 summary:
-                    'Creating small systems that reduce manual steps, clarify decisions, and expose useful project context faster.',
+                    'Legacy system maintenance, planning-tool extensions, and ERP system extension and support.',
                 highlights: [
-                    'Prototype data processing and assistant workflows with Python and APIs.',
-                    'Connect tools through scripts, webhooks, and deployable static frontends.',
-                    'Document repeatable patterns so projects are easier to extend later.',
+                    'Created and optimized SQL queries.',
+                    'Maintained and extended the Canias ERP system, synchronized data, and prepared reports.',
+                    'Migrated legacy project functionality to Laravel while preserving smooth data structure and process functionality.',
                 ],
-                stack: ['Python', 'AI workflows', 'APIs', 'GitHub Actions'],
+                stack: [
+                    'PHP',
+                    'JavaScript',
+                    'MySQL',
+                    'REST API',
+                    'Canias ERP',
+                    'jQuery',
+                    'Laravel',
+                    'Redis',
+                ],
+            },
+            {
+                company: 'UAB Geoparneris',
+                role: 'Geodetic engineer',
+                period: 'Earlier experience',
+                summary:
+                    'Used advanced LiDAR technology for geodetic measurements of various sites and processed data for engineering and construction needs.',
+                highlights: [
+                    'Performed measurements for wind-farm projects, power-line monitoring, and various construction projects.',
+                    'Piloted DJI Matrice 600 and DJI Phantom 4 unmanned aerial vehicles.',
+                    'Processed data with CloudCompare, AutoCAD, TerraSolid, and other tools to create accurate topographic maps, point clouds, and engineering drawings.',
+                ],
+                stack: [
+                    'LiDAR',
+                    'Point Cloud',
+                    'Topography',
+                    'AutoCAD',
+                    'Photogrammetry',
+                ],
             },
         ],
         projects: [
@@ -232,55 +360,85 @@ export const portfolioContent: Record<LocaleCode, PortfolioContent> = {
                     items: ['AI irankiai', 'Python', 'SQL', 'GitHub Actions'],
                 },
             ],
-            keywords: [
-                'AI',
-                'Laravel',
-                'PHP',
-                'Vue',
-                'TypeScript',
-                'Python',
-                'SQL',
-                'API',
-                'Tailwind',
-                'PrimeVue',
-                'GitHub',
-                'Automatika',
-                'Testai',
-                'Inertia',
-                'Vite',
-                'UX',
+            keywordGroups: [
+                {
+                    title: 'Programavimas',
+                    tone: 'software',
+                    items: softwareEngineeringSkills,
+                },
+                {
+                    title: 'Inzinerija',
+                    tone: 'engineering',
+                    items: engineeringSkills,
+                },
             ],
         },
         experience: [
             {
-                role: 'Full-stack web programuotojas',
-                period: 'Dabartine kryptis',
+                company: 'AB Klaipėdos pienas',
+                role: 'IT sistemų analitikas',
+                period: 'Dabar',
+                logoUrl: publicAssetUrl('images/dione_logo.jpg'),
                 summary:
-                    'Laravel ir Vue aplikaciju kurimas su praktiska automatika, aiskiais duomenu srautais ir palaikomomis sasajomis.',
+                    'Full-stack programavimas, procesų optimizavimas, Excel sprendimų migracija į web aplinką.',
                 highlights: [
-                    'Formuoju funkcijas nuo backend modeliu iki naudotojui matomu ekranu.',
-                    'Pasikartojanti operacini darba paverciu aiskiais procesais ir pernaudojamais irankiais.',
-                    'Naudoju TypeScript ir komponentu struktura, kad frontend elgsena butu prognozuojama.',
+                    'Kuriu aplikaciją verslo valdymo įrankiams talpinti. Pasitelkiant Laravel, Vue, Inertia, ir TypeScript.',
+                    'Ruošiu duombazės duomenų struktūras, API integracijas ir legacy logikos palaikymą.',
+                    'Atlieku DevOps funkcijas, kad optimizuočiau aplikacijos kūrimo ir priežiūros procesus.',
                 ],
                 stack: [
                     'Laravel',
                     'Vue',
                     'TypeScript',
-                    'MySQL',
-                    'Tailwind CSS',
+                    'PHP',
+                    'MSSQL',
+                    'CI/CD',
+                    'Bash',
+                    'REST API',
+                    'DevOps',
                 ],
             },
             {
-                role: 'Automatika ir AI paremti irankiai',
-                period: 'Nuolat',
+                company: 'UAB Vlantana',
+                role: 'Programuotojas',
+                period: 'Ankstesne patirtis',
+                logoUrl: publicAssetUrl('images/vlantana_logo.jpg'),
                 summary:
-                    'Mazu sistemu kurimas, kurios mazina rankinius veiksmus, aiskina sprendimus ir greiciau parodo projekto konteksta.',
+                    'Legacy sistemų palaikymas, planavimo įrankių praplėtimas, ERP sistemos praplėtimas ir palaikymas.',
                 highlights: [
-                    'Prototipuoju duomenu apdorojima ir asistento srautus su Python bei API.',
-                    'Jungiu irankius per scriptus, webhookus ir statinius frontendus.',
-                    'Dokumentuoju kartojamus sablonus, kad projektus butu lengviau plesti.',
+                    'SQL užklausų kūrimas ir optimizavimas.',
+                    'Canias ERP sistemos palaikymas, praplėtimas, duomenų sinchronizavimas, ataskaitų rengimas.',
+                    'Legacy projekto funkcionalumų migracija į Laravel išlaikant sklandų duomenų struktūrą ir procesų funkcionalumą.',
                 ],
-                stack: ['Python', 'AI procesai', 'API', 'GitHub Actions'],
+                stack: [
+                    'PHP',
+                    'JavaScript',
+                    'MySQL',
+                    'REST API',
+                    'Canias ERP',
+                    'jQuery',
+                    'Laravel',
+                    'Redis',
+                ],
+            },
+            {
+                company: 'UAB Geoparneris',
+                role: 'Geodezijos inžinierius',
+                period: 'Ankstesne patirtis',
+                summary:
+                    'Naudota pažangiausia LiDAR technologija atliekant įvairių objektų geodezinius matavimus, duomenų apdorojimas inžineriniams ir statybos poreikiams.',
+                highlights: [
+                    'Vykdžiau matavimus vėjų jėgainių projektuose, elektros linijų monitoringe ir įvairiuose statybų projektuose.',
+                    'Pilotavau DJI Matrice 600 ir DJI Phantom 4 bepiločius orlaivius.',
+                    'Apdorojau duomenis naudodamas CloudCompare, AutoCAD, TerraSolid ir kitus įrankius, kad sukurtų tikslius topografinius žemėlapius, taškų debesis ir inžinerinius brėžinius.',
+                ],
+                stack: [
+                    'LiDAR',
+                    'Point Cloud',
+                    'Topography',
+                    'AutoCAD',
+                    'Photogrammetry',
+                ],
             },
         ],
         projects: [

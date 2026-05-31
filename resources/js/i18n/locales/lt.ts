@@ -1,6 +1,6 @@
 export default {
     app: {
-        name: 'Trimzales',
+        name: 'Naidželas Benetis',
         openMenu: 'Atidaryti navigacija',
         closeMenu: 'Uzdaryti navigacija',
         language: 'Kalba',
@@ -15,6 +15,8 @@ export default {
     actions: {
         viewExperience: 'Perziureti patirti',
         viewProjects: 'Perziureti projektus',
+        sendEmail: 'El. pastas',
+        openSocial: 'Atidaryti {platform}',
         previous: 'Atgal',
         next: 'Toliau',
     },
@@ -25,19 +27,19 @@ export default {
         home: {
             eyebrow: 'Asmeninis CV',
             title: 'Full-stack programuotojas, kuriantis naudingas web sistemas.',
-            intro: 'Kuriu praktiskus produktus su Laravel, Vue, TypeScript ir AI paremtais darbo procesais. Sis puslapis veikia kaip glaustas CV, projektu rodykle ir vieta nuolat atnaujinti darbus.',
+            intro: 'Kuriu praktiškus produktus su Laravel, Vue, TypeScript, AI ir kitomis technologijomis.',
             skillsTitle: 'Dabartinis stackas',
             sphereTitle: 'Irakiai, kuriuos naudoju',
         },
         experience: {
             eyebrow: 'Darbo patirtis',
-            title: 'Patirtis orientuota i rezultata, aiskuma ir palaikomas sistemas.',
-            intro: 'Sis puslapis skirtas redaguojamai roliu, atsakomybiu, technologiju ir pamatuojamu rezultatu laiko juostai.',
+            title: 'Patirtis orientuota į rezultatą, aiškumą ir palaikomas sistemas.',
+            intro: 'Lengvai prisitaikau prie naujų technologijų ir atsakomybių, todėl mano patirtis apima įvairias roles, technologijas ir atsakomybes.',
         },
         projects: {
             eyebrow: 'Projektai',
             title: 'Vienu metu rodoma viena projekto istorija.',
-            intro: 'Pasirink projekta ir matysi paaiskinima bei vizualia eiga, kas vyksta sistemoje.',
+            intro: 'Pasirink projektą ir matysi paaiškinimą bei vizualią eigą, kas vyksta sistemoje.',
         },
     },
 } as const;

@@ -1,107 +1,112 @@
 <script setup lang="ts">
 import Button from 'primevue/button';
+import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 import KeywordSphere from '@/components/KeywordSphere.vue';
 import { usePortfolio } from '@/composables/usePortfolio';
+import { portfolioIdentity } from '@/data/portfolio';
 
 const { t } = useI18n({ useScope: 'global' });
 const { content } = usePortfolio();
+
+const emailHref = `mailto:${portfolioIdentity.email}`;
+const isAvatarImageVisible = ref(true);
+
+const avatarInitials = computed(() =>
+    portfolioIdentity.fullName
+        .split(' ')
+        .map((namePart) => namePart.charAt(0))
+        .join('')
+        .slice(0, 2)
+        .toUpperCase(),
+);
 </script>
 
 <template>
-    <section class="px-5 lg:px-12 py-12 lg:py-16">
-        <div
-            class="lg:items-center gap-10 grid lg:grid-cols-[minmax(0,0.95fr)_minmax(20rem,0.75fr)] mx-auto max-w-7xl"
-        >
-            <div>
-                <p
-                    class="font-semibold text-sky-700 text-sm uppercase tracking-normal"
-                >
-                    {{ t('pages.home.eyebrow') }}
-                </p>
-                <h1
-                    class="mt-4 max-w-4xl font-semibold text-slate-950 text-4xl sm:text-5xl lg:text-6xl tracking-normal"
-                >
-                    {{ t('pages.home.title') }}
-                </h1>
-                <p class="mt-6 max-w-3xl text-slate-600 text-lg leading-8">
-                    {{ t('pages.home.intro') }}
-                </p>
-
-                <div class="flex sm:flex-row flex-col gap-3 mt-8">
-                    <Button
-                        as="router-link"
-                        to="/experience"
-                        icon="pi pi-briefcase"
-                        :label="t('actions.viewExperience')"
+    <section class="bg-white pb-10 border-slate-200 border-b">
+        <div class="mx-auto max-w-7xl">
+            <div class="px-5 lg:px-12 pt-7">
+                <div class="relative">
+                    <div
+                        class="bg-slate-900 bg-cover bg-center border border-slate-200 rounded-lg h-56 sm:h-64 lg:h-72"
+                        :style="{
+                            backgroundImage: `linear-gradient(90deg, rgba(15, 23, 42, 0.48), rgba(15, 23, 42, 0.08)), url(${portfolioIdentity.coverImageUrl})`,
+                        }"
                     />
-                    <Button
-                        as="router-link"
-                        to="/projects"
-                        icon="pi pi-star"
-                        :label="t('actions.viewProjects')"
-                        severity="secondary"
-                        outlined
-                    />
+                    <div
+                        class="bottom-0 left-1/2 absolute -translate-x-1/2 translate-y-1/2"
+                    >
+                        <img
+                            v-if="isAvatarImageVisible"
+                            :src="portfolioIdentity.avatarUrl"
+                            :alt="portfolioIdentity.fullName"
+                            class="bg-white shadow-lg border-[6px] border-white rounded-full w-36 sm:w-40 h-36 sm:h-40 object-cover"
+                            @error="isAvatarImageVisible = false"
+                        />
+                        <span
+                            v-else
+                            class="place-items-center grid bg-slate-950 shadow-lg border-[6px] border-white rounded-full w-36 sm:w-40 h-36 sm:h-40 font-semibold text-white text-4xl"
+                            aria-hidden="true"
+                        >
+                            {{ avatarInitials }}
+                        </span>
+                    </div>
                 </div>
             </div>
 
-            <section
-                class="bg-white shadow-sm p-4 border border-slate-200 rounded-lg"
-            >
-                <h2 class="sr-only">{{ t('pages.home.sphereTitle') }}</h2>
-                <KeywordSphere :keywords="content.home.keywords" />
-            </section>
-        </div>
-    </section>
-
-    <section class="bg-white px-5 lg:px-12 py-10 border-slate-200 border-y">
-        <div class="gap-4 grid md:grid-cols-3 mx-auto max-w-7xl">
-            <article
-                v-for="card in content.home.focusCards"
-                :key="card.label"
-                class="p-5 border border-slate-200 rounded-lg"
-            >
-                <p class="font-semibold text-slate-500 text-sm">
-                    {{ card.label }}
-                </p>
-                <h2
-                    class="mt-2 font-semibold text-slate-950 text-xl tracking-normal"
+            <div class="flex flex-col items-center gap-5 mt-20 px-5 lg:px-12">
+                <div
+                    class="flex flex-col items-center gap-2 w-full text-center"
                 >
-                    {{ card.value }}
-                </h2>
-                <p class="mt-3 text-slate-600 text-sm leading-6">
-                    {{ card.detail }}
-                </p>
-            </article>
-        </div>
-    </section>
+                    <h1
+                        class="font-semibold text-slate-950 text-3xl sm:text-4xl tracking-normal"
+                    >
+                        {{ portfolioIdentity.fullName }}
+                    </h1>
+                    <p class="text-slate-500 text-base leading-7">
+                        {{ portfolioIdentity.city }}
+                    </p>
+                    <p class="max-w-3xl text-slate-600 text-base leading-7">
+                        {{ t('pages.home.intro') }}
+                    </p>
+                </div>
 
-    <section class="px-5 lg:px-12 py-12">
-        <div class="mx-auto max-w-7xl">
-            <h2 class="font-semibold text-slate-950 text-2xl tracking-normal">
-                {{ t('pages.home.skillsTitle') }}
-            </h2>
-            <div class="gap-4 grid md:grid-cols-3 mt-6">
-                <article
-                    v-for="group in content.home.skillGroups"
-                    :key="group.title"
-                    class="bg-white shadow-sm p-5 border border-slate-200 rounded-lg"
-                >
-                    <h3 class="font-semibold text-slate-950 text-base">
-                        {{ group.title }}
-                    </h3>
-                    <div class="flex flex-wrap gap-2 mt-4">
-                        <span
-                            v-for="skill in group.items"
-                            :key="skill"
-                            class="bg-slate-50 px-3 py-1 border border-slate-200 rounded-full font-medium text-slate-700 text-sm"
-                        >
-                            {{ skill }}
-                        </span>
-                    </div>
-                </article>
+                <div class="flex flex-wrap justify-center gap-3">
+                    <Button
+                        v-for="socialLink in portfolioIdentity.socialLinks"
+                        :key="socialLink.url"
+                        as="a"
+                        :href="socialLink.url"
+                        :icon="socialLink.icon"
+                        :label="socialLink.label"
+                        :aria-label="
+                            t('actions.openSocial', {
+                                platform: socialLink.label,
+                            })
+                        "
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        rounded
+                        severity="secondary"
+                        outlined
+                    />
+                    <Button
+                        as="a"
+                        :href="emailHref"
+                        icon="pi pi-envelope"
+                        :label="t('actions.sendEmail')"
+                        rounded
+                        severity="secondary"
+                    />
+                </div>
+
+                <section class="w-full" aria-labelledby="home-sphere-title">
+                    <h2 id="home-sphere-title" class="sr-only">
+                        {{ t('pages.home.sphereTitle') }}
+                    </h2>
+                    <KeywordSphere :groups="content.home.keywordGroups" />
+                </section>
             </div>
         </div>
     </section>

@@ -4,13 +4,14 @@ import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { RouterLink, RouterView, useRoute } from 'vue-router';
 
-import { lastUpdatedAt } from '@/data/portfolio';
+import { lastUpdatedAt, portfolioIdentity } from '@/data/portfolio';
 import { setLocale, supportedLocales } from '@/i18n';
 import type { LocaleCode } from '@/i18n';
 
 const route = useRoute();
 const { locale, t } = useI18n({ useScope: 'global' });
 const isMenuOpen = ref(false);
+const emailHref = `mailto:${portfolioIdentity.email}`;
 
 const navItems = computed(() => [
     {
@@ -51,7 +52,7 @@ const isActivePath = (path: string) => {
 </script>
 
 <template>
-    <div class="bg-slate-50 min-h-screen text-slate-950">
+    <div class="flex flex-col bg-slate-50 min-h-screen text-slate-950">
         <header
             class="top-0 z-40 sticky bg-slate-950 shadow-lg shadow-slate-950/10 px-5 lg:px-12 py-4 border-slate-800 border-b"
         >
@@ -145,11 +146,13 @@ const isActivePath = (path: string) => {
             </div>
         </header>
 
-        <main class="min-h-[calc(100vh-160px)]">
+        <main class="flex-1 min-h-0">
             <RouterView />
         </main>
 
-        <footer class="bg-white px-5 lg:px-12 py-6 border-slate-200 border-t">
+        <footer
+            class="bg-white px-5 lg:px-12 py-6 border-slate-200 border-t shrink-0"
+        >
             <div
                 class="flex sm:flex-row flex-col sm:justify-between sm:items-center gap-3 mx-auto max-w-7xl text-slate-600 text-sm"
             >
@@ -161,7 +164,7 @@ const isActivePath = (path: string) => {
                 }}</span>
                 <Button
                     as="a"
-                    href="mailto:hello@example.com"
+                    :href="emailHref"
                     icon="pi pi-envelope"
                     :label="t('app.contact')"
                     severity="secondary"
