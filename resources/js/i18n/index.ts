@@ -30,7 +30,7 @@ const resolveInitialLocale = (): LocaleCode => {
         return 'en';
     }
 
-    const storedLocale = window.localStorage.getItem('trimzales-locale');
+    const storedLocale = window.localStorage.getItem('thatsme-locale');
 
     if (isSupportedLocale(storedLocale)) {
         return storedLocale;
@@ -57,7 +57,7 @@ export const setLocale = (locale: LocaleCode) => {
     i18n.global.locale.value = locale;
 
     if (typeof window !== 'undefined') {
-        window.localStorage.setItem('trimzales-locale', locale);
+        window.localStorage.setItem('thatsme-locale', locale);
         document.documentElement.lang = locale;
     }
 };
