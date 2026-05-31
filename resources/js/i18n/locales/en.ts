@@ -1,6 +1,9 @@
 export default {
     app: {
         name: 'Naidželas Benetis',
+        openMenu: 'Open navigation',
+        contact: 'Contact',
+        closeMenu: 'Close navigation',
         title: 'Full-stack developer building useful web systems.',
         intro: 'I build practical products with Laravel, Vue, TypeScript, AI, and other technologies.',
         language: 'Language',

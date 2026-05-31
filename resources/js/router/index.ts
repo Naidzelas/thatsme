@@ -10,7 +10,7 @@ const router = createRouter({
             name: 'home',
             component: () => import('@/pages/Home.vue'),
             meta: {
-                title: 'Me',
+                title: 'Home',
             },
         },
         {

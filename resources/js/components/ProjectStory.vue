@@ -187,20 +187,20 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-    <article class="project-story grid gap-6 lg:grid-cols-2">
+    <article class="gap-6 grid lg:grid-cols-2 project-story">
         <section
-            class="story-panel rounded-lg border border-slate-200 bg-white p-5 shadow-sm sm:p-6"
+            class="bg-white shadow-sm p-5 sm:p-6 border border-slate-200 rounded-lg story-panel"
         >
             <div class="story-dialog">
-                <div class="flex shrink-0 items-start justify-between gap-4">
+                <div class="flex justify-between items-start gap-4 shrink-0">
                     <div class="min-w-0">
                         <p
-                            class="story-dialog__signal text-sm font-semibold tracking-normal text-sky-700 uppercase"
+                            class="font-semibold text-sky-700 text-sm uppercase tracking-normal story-dialog__signal"
                         >
                             {{ activeSlide?.signal }}
                         </p>
                         <h1
-                            class="story-dialog__title mt-2 text-3xl leading-tight font-semibold tracking-normal text-slate-950"
+                            class="mt-2 font-semibold text-slate-950 text-3xl leading-tight tracking-normal story-dialog__title"
                         >
                             {{ activeSlide?.title }}
                         </h1>
@@ -214,7 +214,7 @@ onBeforeUnmount(() => {
                                 ref="idlePortraitVideoRef"
                                 :src="portraitVideos.idleUrl"
                                 :aria-label="portfolioIdentity.fullName"
-                                class="story-portrait__video h-full w-full rounded-full object-cover"
+                                class="rounded-full w-full h-full object-cover story-portrait__video"
                                 autoplay
                                 loop
                                 muted
@@ -245,12 +245,12 @@ onBeforeUnmount(() => {
                             v-else
                             :src="portfolioIdentity.avatarUrl"
                             :alt="portfolioIdentity.fullName"
-                            class="h-full w-full rounded-full object-cover"
+                            class="rounded-full w-full h-full object-cover"
                         />
                     </div>
                 </div>
 
-                <div class="story-dialog__content mt-6">
+                <div class="mt-6 story-dialog__content">
                     <Transition name="story-copy" mode="out-in">
                         <div :key="activeSlideIndex">
                             <template v-if="isOverviewSlide">
@@ -264,34 +264,34 @@ onBeforeUnmount(() => {
                                     />
                                 </div>
 
-                                <div class="story-dialog__copy mt-5 space-y-4">
+                                <div class="space-y-4 mt-5 story-dialog__copy">
                                     <p
                                         v-for="(
                                             paragraph, index
                                         ) in visibleDialogParagraphs"
                                         :key="`${activeSlideIndex}-${index}`"
-                                        class="text-base leading-7 text-slate-700"
+                                        class="text-slate-700 text-base leading-7"
                                     >
                                         {{ paragraph }}
                                     </p>
                                 </div>
 
                                 <div
-                                    class="mt-6 border-t border-slate-200 pt-5"
+                                    class="mt-6 pt-5 border-slate-200 border-t"
                                 >
                                     <h2
-                                        class="text-sm font-semibold tracking-normal text-slate-500 uppercase"
+                                        class="font-semibold text-slate-500 text-sm uppercase tracking-normal"
                                     >
                                         {{ t('labels.outcomes') }}
                                     </h2>
-                                    <ul class="mt-3 space-y-3">
+                                    <ul class="space-y-3 mt-3">
                                         <li
                                             v-for="outcome in project.outcomes"
                                             :key="outcome"
-                                            class="flex gap-3 text-sm leading-6 text-slate-700"
+                                            class="flex gap-3 text-slate-700 text-sm leading-6"
                                         >
                                             <i
-                                                class="pi pi-check-circle mt-1 text-emerald-600"
+                                                class="mt-1 text-emerald-600 pi pi-check-circle"
                                                 aria-hidden="true"
                                             />
                                             <span>{{ outcome }}</span>
@@ -301,13 +301,13 @@ onBeforeUnmount(() => {
                             </template>
 
                             <template v-else>
-                                <div class="story-dialog__copy space-y-4">
+                                <div class="space-y-4 story-dialog__copy">
                                     <p
                                         v-for="(
                                             paragraph, index
                                         ) in visibleDialogParagraphs"
                                         :key="`${activeSlideIndex}-${index}`"
-                                        class="text-lg leading-8 text-slate-700"
+                                        class="text-slate-700 text-lg leading-8"
                                     >
                                         {{ paragraph }}
                                     </p>
@@ -319,7 +319,7 @@ onBeforeUnmount(() => {
             </div>
 
             <div
-                class="story-controls flex items-center justify-between border-t border-slate-200 pt-5"
+                class="flex justify-between items-center pt-5 border-slate-200 border-t story-controls"
             >
                 <Button
                     :aria-label="t('actions.previous')"
@@ -493,7 +493,7 @@ onBeforeUnmount(() => {
 @media (max-width: 767px) {
     .project-story {
         --project-story-stage-height: auto;
-        height: clamp(30rem, calc(100svh - 9.25rem), 46rem);
+        height: auto;
         grid-template-rows: minmax(0, 1fr) auto;
         gap: 0;
     }
@@ -510,6 +510,7 @@ onBeforeUnmount(() => {
         order: 2;
         height: clamp(10rem, 25svh, 13.5rem);
         padding: 0.875rem;
+        min-height: 18rem;
         border-top-left-radius: 0;
         border-top-right-radius: 0;
     }
