@@ -41,12 +41,12 @@ watch(
 
 <template>
     <article
-        class="gap-6 grid lg:grid-cols-[minmax(0,0.95fr)_minmax(0,1.05fr)]"
+        class="grid gap-6 lg:grid-cols-[minmax(0,0.95fr)_minmax(0,1.05fr)]"
     >
         <section
-            class="bg-white shadow-sm p-6 border border-slate-200 rounded-lg"
+            class="rounded-lg border border-slate-200 bg-white p-6 shadow-sm"
         >
-            <div class="flex flex-wrap gap-2 mb-5">
+            <div class="mb-5 flex flex-wrap gap-2">
                 <Tag
                     v-for="technology in project.stack"
                     :key="technology"
@@ -56,30 +56,30 @@ watch(
                 />
             </div>
 
-            <h2 class="font-semibold text-slate-950 text-2xl tracking-normal">
+            <h2 class="text-2xl font-semibold tracking-normal text-slate-950">
                 {{ project.title }}
             </h2>
-            <p class="mt-3 text-slate-600 text-base leading-7">
+            <p class="mt-3 text-base leading-7 text-slate-600">
                 {{ project.summary }}
             </p>
-            <p class="mt-5 text-slate-700 text-base leading-7">
+            <p class="mt-5 text-base leading-7 text-slate-700">
                 {{ project.explanation }}
             </p>
 
-            <div class="mt-6 pt-5 border-slate-200 border-t">
+            <div class="mt-6 border-t border-slate-200 pt-5">
                 <h3
-                    class="font-semibold text-slate-500 text-sm uppercase tracking-normal"
+                    class="text-sm font-semibold tracking-normal text-slate-500 uppercase"
                 >
                     {{ t('labels.outcomes') }}
                 </h3>
-                <ul class="space-y-3 mt-3">
+                <ul class="mt-3 space-y-3">
                     <li
                         v-for="outcome in project.outcomes"
                         :key="outcome"
-                        class="flex gap-3 text-slate-700 text-sm leading-6"
+                        class="flex gap-3 text-sm leading-6 text-slate-700"
                     >
                         <i
-                            class="mt-1 text-emerald-600 pi pi-check-circle"
+                            class="pi pi-check-circle mt-1 text-emerald-600"
                             aria-hidden="true"
                         />
                         <span>{{ outcome }}</span>
@@ -89,15 +89,15 @@ watch(
         </section>
 
         <section
-            class="bg-slate-950 shadow-slate-950/15 shadow-xl border border-slate-800 rounded-lg overflow-hidden text-white"
+            class="overflow-hidden rounded-lg border border-slate-800 bg-slate-950 text-white shadow-xl shadow-slate-950/15"
         >
-            <div class="px-5 py-4 border-slate-800 border-b">
-                <div class="flex justify-between items-center gap-4">
+            <div class="border-b border-slate-800 px-5 py-4">
+                <div class="flex items-center justify-between gap-4">
                     <div>
-                        <p class="font-medium text-slate-400 text-sm">
+                        <p class="text-sm font-medium text-slate-400">
                             {{ activeStep?.signal }}
                         </p>
-                        <h3 class="mt-1 font-semibold text-xl tracking-normal">
+                        <h3 class="mt-1 text-xl font-semibold tracking-normal">
                             {{ activeStep?.title }}
                         </h3>
                     </div>
@@ -124,7 +124,7 @@ watch(
                 </div>
             </div>
 
-            <div class="p-5 sm:p-7 project-stage">
+            <div class="project-stage p-5 sm:p-7">
                 <div class="project-stage__screen">
                     <div class="project-stage__nodes" aria-hidden="true">
                         <span
@@ -138,10 +138,10 @@ watch(
                             ]"
                         />
                     </div>
-                    <p class="max-w-xl text-slate-200 text-base leading-7">
+                    <p class="max-w-xl text-base leading-7 text-slate-200">
                         {{ activeStep?.text }}
                     </p>
-                    <div class="gap-3 grid sm:grid-cols-3 mt-8">
+                    <div class="mt-8 grid gap-3 sm:grid-cols-3">
                         <button
                             v-for="(step, index) in project.steps"
                             :key="step.title"
@@ -155,11 +155,11 @@ watch(
                             @click="selectStep(index)"
                         >
                             <span
-                                class="block font-semibold text-xs uppercase tracking-normal"
+                                class="block text-xs font-semibold tracking-normal uppercase"
                             >
                                 {{ step.signal }}
                             </span>
-                            <span class="block mt-1 font-medium">{{
+                            <span class="mt-1 block font-medium">{{
                                 step.title
                             }}</span>
                         </button>

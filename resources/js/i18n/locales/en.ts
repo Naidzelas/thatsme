@@ -18,11 +18,29 @@ export default {
         viewProjects: 'View projects',
         sendEmail: 'Email',
         openSocial: 'Open {platform}',
+        openStory: 'Open story',
+        openWebsite: 'Open website',
+        openRepository: 'Open repository',
+        linkComingSoon: 'Coming soon',
         previous: 'Previous',
         next: 'Next',
     },
     labels: {
         outcomes: 'Outcomes',
+        technologies: 'Technologies',
+        selectTechnologiesToFilter: 'Select technologies to filter',
+        selectedFilters: 'Selected filters',
+        publicProjects: 'Public',
+        personalProjects: 'Personal',
+        projectCount: '{count} projects',
+        noMatchingProjects: 'No projects match the selected technologies.',
+    },
+    statuses: {
+        active: 'Active',
+        experimental: 'Experimental',
+        'work-in-progress': 'Work in Progress',
+        inactive: 'Inactive',
+        tool: 'Tool',
     },
     pages: {
         home: {
@@ -39,8 +57,9 @@ export default {
         },
         projects: {
             eyebrow: 'Projects',
-            title: 'One project story at a time.',
-            intro: 'Pick a project to see the explanation and a visual walkthrough of what is happening.',
+            title: 'Project list first, stories when you need the detail.',
+            intro: 'Browse public and personal projects, filter by technology, then open a story for the project you want to inspect.',
+            filterTitle: 'Latest Projects',
         },
     },
 } as const;

@@ -17,11 +17,29 @@ export default {
         viewProjects: 'Perziureti projektus',
         sendEmail: 'El. pastas',
         openSocial: 'Atidaryti {platform}',
+        openStory: 'Atidaryti istoriją',
+        openWebsite: 'Atidaryti svetainę',
+        openRepository: 'Atidaryti',
+        linkComingSoon: 'Netrukus',
         previous: 'Atgal',
         next: 'Toliau',
     },
     labels: {
         outcomes: 'Rezultatai',
+        technologies: 'Technologijos',
+        selectTechnologiesToFilter: 'Pasirink technologijas filtravimui',
+        selectedFilters: 'Pasirinkti filtrai',
+        publicProjects: 'Vieši',
+        personalProjects: 'Asmeniniai',
+        projectCount: '{count} projektai',
+        noMatchingProjects: 'Nėra projektų pagal pasirinktas technologijas.',
+    },
+    statuses: {
+        active: 'Aktyvus',
+        experimental: 'Eksperimentinis',
+        'work-in-progress': 'Vystomas',
+        inactive: 'Neaktyvus',
+        tool: 'Įrankis',
     },
     pages: {
         home: {
@@ -38,8 +56,9 @@ export default {
         },
         projects: {
             eyebrow: 'Projektai',
-            title: 'Vienu metu rodoma viena projekto istorija.',
-            intro: 'Pasirink projektą ir matysi paaiškinimą bei vizualią eigą, kas vyksta sistemoje.',
+            title: 'Pirmiausia projektų sąrašas, o istorijos tada, kai reikia detalių.',
+            intro: 'Peržiūrėk viešus ir asmeninius projektus, filtruok pagal technologiją ir atidaryk pasirinktą istoriją.',
+            filterTitle: 'Naujausi projektai',
         },
     },
 } as const;

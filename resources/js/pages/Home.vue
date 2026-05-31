@@ -24,29 +24,29 @@ const avatarInitials = computed(() =>
 </script>
 
 <template>
-    <section class="bg-white pb-10 border-slate-200 border-b">
+    <section class="border-b border-slate-200 bg-white pb-10">
         <div class="mx-auto max-w-7xl">
-            <div class="px-5 lg:px-12 pt-7">
+            <div class="px-5 pt-7 lg:px-12">
                 <div class="relative">
                     <div
-                        class="bg-slate-900 bg-cover bg-center border border-slate-200 rounded-lg h-56 sm:h-64 lg:h-72"
+                        class="h-56 rounded-lg border border-slate-200 bg-slate-900 bg-cover bg-center sm:h-64 lg:h-72"
                         :style="{
                             backgroundImage: `linear-gradient(90deg, rgba(15, 23, 42, 0.48), rgba(15, 23, 42, 0.08)), url(${portfolioIdentity.coverImageUrl})`,
                         }"
                     />
                     <div
-                        class="bottom-0 left-1/2 absolute -translate-x-1/2 translate-y-1/2"
+                        class="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2"
                     >
                         <img
                             v-if="isAvatarImageVisible"
                             :src="portfolioIdentity.avatarUrl"
                             :alt="portfolioIdentity.fullName"
-                            class="bg-white shadow-lg border-[6px] border-white rounded-full w-36 sm:w-40 h-36 sm:h-40 object-cover"
+                            class="h-36 w-36 rounded-full border-[6px] border-white bg-white object-cover shadow-lg sm:h-40 sm:w-40"
                             @error="isAvatarImageVisible = false"
                         />
                         <span
                             v-else
-                            class="place-items-center grid bg-slate-950 shadow-lg border-[6px] border-white rounded-full w-36 sm:w-40 h-36 sm:h-40 font-semibold text-white text-4xl"
+                            class="grid h-36 w-36 place-items-center rounded-full border-[6px] border-white bg-slate-950 text-4xl font-semibold text-white shadow-lg sm:h-40 sm:w-40"
                             aria-hidden="true"
                         >
                             {{ avatarInitials }}
@@ -55,19 +55,19 @@ const avatarInitials = computed(() =>
                 </div>
             </div>
 
-            <div class="flex flex-col items-center gap-5 mt-20 px-5 lg:px-12">
+            <div class="mt-20 flex flex-col items-center gap-5 px-5 lg:px-12">
                 <div
-                    class="flex flex-col items-center gap-2 w-full text-center"
+                    class="flex w-full flex-col items-center gap-2 text-center"
                 >
                     <h1
-                        class="font-semibold text-slate-950 text-3xl sm:text-4xl tracking-normal"
+                        class="text-3xl font-semibold tracking-normal text-slate-950 sm:text-4xl"
                     >
                         {{ portfolioIdentity.fullName }}
                     </h1>
-                    <p class="text-slate-500 text-base leading-7">
+                    <p class="text-base leading-7 text-slate-500">
                         {{ portfolioIdentity.city }}
                     </p>
-                    <p class="max-w-3xl text-slate-600 text-base leading-7">
+                    <p class="max-w-3xl text-base leading-7 text-slate-600">
                         {{ t('pages.home.intro') }}
                     </p>
                 </div>

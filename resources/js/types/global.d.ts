@@ -1,5 +1,10 @@
 import type { Auth } from '@/types/auth';
 
+declare module '*.svg' {
+    const source: string;
+    export default source;
+}
+
 // Extend ImportMeta interface for Vite...
 declare module 'vite/client' {
     interface ImportMetaEnv {

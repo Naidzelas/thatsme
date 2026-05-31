@@ -16,10 +16,32 @@ export interface ProjectStep {
     signal: string;
 }
 
+export type ProjectVisibility = 'public' | 'personal';
+
+export type ProjectStatus =
+    | 'active'
+    | 'experimental'
+    | 'work-in-progress'
+    | 'inactive'
+    | 'tool';
+
+export type ProjectLinkKind = 'website' | 'github';
+
+export interface ProjectExternalLink {
+    kind: ProjectLinkKind;
+    url?: string;
+}
+
 export interface ProjectItem {
     slug: string;
     title: string;
     summary: string;
+    category: string;
+    visibility: ProjectVisibility;
+    status: ProjectStatus;
+    logoUrl?: string;
+    primaryTechnology: string;
+    externalLink?: ProjectExternalLink;
     explanation: string;
     stack: string[];
     outcomes: string[];
@@ -258,70 +280,202 @@ export const portfolioContent: Record<LocaleCode, PortfolioContent> = {
         ],
         projects: [
             {
-                slug: 'cv-spa',
-                title: 'Static CV SPA',
+                slug: 'penkilaukai',
+                title: 'Penkilaukai',
                 summary:
-                    'A GitHub Pages-ready personal site with translated pages, project stories, and a PrimeVue shell.',
+                    'A public e-commerce project for presenting products and supporting a practical online storefront.',
+                category: 'E-commerce project',
+                visibility: 'public',
+                status: 'active',
+                logoUrl: publicAssetUrl('images/Penki-laukai-Logo-Black.svg'),
+                primaryTechnology: 'PHP',
+                externalLink: {
+                    kind: 'website',
+                    url: 'https://penkilaukai.lt',
+                },
                 explanation:
-                    'The site separates portfolio content from the app shell, so copy, translations, and projects can evolve without touching the deployment path.',
+                    'The story for this project will focus on the commerce flow, admin operations, and the Laravel/Vue stack behind the public site.',
                 stack: [
-                    'Vue',
+                    'PHP',
+                    'Laravel',
+                    'Inertia',
+                    'VueJS',
                     'TypeScript',
-                    'PrimeVue',
-                    'vue-i18n',
-                    'GitHub Pages',
+                    'PHPFilament',
                 ],
                 outcomes: [
-                    'Clean slug routes for a static host.',
-                    'Reusable project story component.',
-                    'English and Lithuanian content structure.',
+                    'Public website available for visitors.',
+                    'Laravel application structure for product and content management.',
+                    'Vue and TypeScript interface for a smoother customer experience.',
                 ],
                 steps: [
                     {
-                        title: 'Route request',
-                        text: 'The browser opens a slug such as /projects and GitHub Pages serves the static app fallback.',
-                        signal: 'Slug',
+                        title: 'Public storefront',
+                        text: 'Visitors land on the public website, browse the business offering, and continue through the e-commerce experience.',
+                        signal: 'Store',
                     },
                     {
-                        title: 'Hydrate app',
-                        text: 'Vue Router picks the page, vue-i18n resolves the active language, and the shared layout stays mounted.',
-                        signal: 'SPA',
+                        title: 'Application layer',
+                        text: 'Laravel, Inertia, VueJS, and TypeScript keep the server-driven product flow connected to a responsive frontend.',
+                        signal: 'Stack',
                     },
                     {
-                        title: 'Show story',
-                        text: 'The selected project feeds the explanation panel and the visual walkthrough on the right.',
-                        signal: 'Story',
+                        title: 'Operations',
+                        text: 'Filament-based administration supports product and store management behind the public experience.',
+                        signal: 'Admin',
                     },
                 ],
             },
             {
-                slug: 'workflow-console',
-                title: 'Workflow Console',
+                slug: 'llm-obsidian-bridge',
+                title: 'LLM Obsidian Bridge',
                 summary:
-                    'A project format for explaining technical systems as a sequence of visible decisions.',
+                    'A personal AI project for connecting local language-model workflows with an Obsidian knowledge base.',
+                category: 'AI project',
+                visibility: 'personal',
+                status: 'experimental',
+                primaryTechnology: 'TypeScript',
+                externalLink: {
+                    kind: 'github',
+                },
                 explanation:
-                    'The component turns project notes into a guided narrative: what the user does, what the system changes, and what result appears next.',
-                stack: ['Vue', 'State', 'Animation', 'UX writing'],
+                    'The story will describe how notes, prompts, and local model calls can move through a reproducible automation pipeline.',
+                stack: ['TypeScript', 'Kubernetes', 'Tekton', 'Ollama'],
                 outcomes: [
-                    'One active project at a time.',
-                    'Readable explanation beside visual progress.',
-                    'Data-driven content for future projects.',
+                    'Bridge concept for Obsidian-centered AI workflows.',
+                    'Local model experimentation with Ollama.',
+                    'Pipeline-first thinking using Kubernetes and Tekton.',
                 ],
                 steps: [
                     {
-                        title: 'Choose context',
-                        text: 'The visitor selects a project and the component resets to the first step.',
-                        signal: 'Select',
+                        title: 'Collect notes',
+                        text: 'Obsidian content becomes the working context for prompts and automation tasks.',
+                        signal: 'Vault',
                     },
                     {
-                        title: 'Read action',
-                        text: 'The left panel explains the project while the right panel advances through visual states.',
-                        signal: 'Explain',
+                        title: 'Run model task',
+                        text: 'TypeScript services coordinate local LLM calls through Ollama and prepare structured responses.',
+                        signal: 'LLM',
                     },
                     {
-                        title: 'Compare outcome',
-                        text: 'Outcomes stay visible so the story keeps a practical engineering shape.',
-                        signal: 'Outcome',
+                        title: 'Automate pipeline',
+                        text: 'Kubernetes and Tekton keep the experimental workflow reproducible as it grows.',
+                        signal: 'Flow',
+                    },
+                ],
+            },
+            {
+                slug: 'tipodieta',
+                title: 'TipoDieta',
+                summary:
+                    'A personal nutrition project exploring typed meal data, scraping, and repeatable deployment workflows.',
+                category: 'Nutrition project',
+                visibility: 'personal',
+                status: 'work-in-progress',
+                primaryTechnology: 'TypeScript',
+                externalLink: {
+                    kind: 'github',
+                },
+                explanation:
+                    'The story will cover the path from scraped nutrition sources to structured data that can support practical food decisions.',
+                stack: ['TypeScript', 'Kubernetes', 'Tekton', 'Web Scraping'],
+                outcomes: [
+                    'Typed data model for nutrition information.',
+                    'Scraping workflow for collecting source data.',
+                    'Deployment experiments using Kubernetes and Tekton.',
+                ],
+                steps: [
+                    {
+                        title: 'Gather data',
+                        text: 'Web scraping collects nutrition-oriented source material for later cleanup and structure.',
+                        signal: 'Scrape',
+                    },
+                    {
+                        title: 'Shape records',
+                        text: 'TypeScript keeps the nutrition data model explicit while the project is still evolving.',
+                        signal: 'Types',
+                    },
+                    {
+                        title: 'Deploy workflow',
+                        text: 'Kubernetes and Tekton provide a repeatable place to run and refine the pipeline.',
+                        signal: 'Deploy',
+                    },
+                ],
+            },
+            {
+                slug: 'suber',
+                title: 'Suber',
+                summary:
+                    'A personal AI movie translator experiment combining Python processing with a lightweight JavaScript interface.',
+                category: 'AI movie translator',
+                visibility: 'personal',
+                status: 'experimental',
+                primaryTechnology: 'Python',
+                externalLink: {
+                    kind: 'github',
+                },
+                explanation:
+                    'The story will explain the translation workflow, where Python handles the heavy processing and JavaScript supports the user-facing pieces.',
+                stack: ['Python', 'JavaScript'],
+                outcomes: [
+                    'Experiment focused on movie translation workflows.',
+                    'Python processing layer for language tasks.',
+                    'JavaScript interface layer for interaction and review.',
+                ],
+                steps: [
+                    {
+                        title: 'Load media context',
+                        text: 'The project starts from movie subtitle or language material that needs translation support.',
+                        signal: 'Input',
+                    },
+                    {
+                        title: 'Process translation',
+                        text: 'Python coordinates the translation-oriented processing and prepares output for review.',
+                        signal: 'Python',
+                    },
+                    {
+                        title: 'Review result',
+                        text: 'JavaScript can support a lightweight layer for checking and refining translated content.',
+                        signal: 'Review',
+                    },
+                ],
+            },
+            {
+                slug: 'laravel-tinker',
+                title: 'Laravel-Tinker',
+                summary:
+                    'A personal PHP tool for making Laravel Tinker workflows easier to reach from a repository.',
+                category: 'Developer tool',
+                visibility: 'personal',
+                status: 'tool',
+                primaryTechnology: 'PHP',
+                externalLink: {
+                    kind: 'github',
+                    url: 'https://github.com/Naidzelas/Laravel-Tinker',
+                },
+                explanation:
+                    'The story will describe the small-tool workflow and why quick access to Laravel Tinker can help during development and debugging.',
+                stack: ['PHP'],
+                outcomes: [
+                    'Public GitHub repository for the tool.',
+                    'Focused PHP utility for Laravel development workflows.',
+                    'Small scope that is easy to revisit and improve.',
+                ],
+                steps: [
+                    {
+                        title: 'Open project',
+                        text: 'A Laravel developer starts from a repository where quick Tinker access would save repeated setup time.',
+                        signal: 'Start',
+                    },
+                    {
+                        title: 'Run utility',
+                        text: 'The PHP tool keeps the interaction focused on the Laravel runtime and the commands being explored.',
+                        signal: 'Tinker',
+                    },
+                    {
+                        title: 'Inspect result',
+                        text: 'The workflow supports fast feedback while testing models, services, or framework behavior.',
+                        signal: 'Result',
                     },
                 ],
             },
@@ -443,70 +597,202 @@ export const portfolioContent: Record<LocaleCode, PortfolioContent> = {
         ],
         projects: [
             {
-                slug: 'cv-spa',
-                title: 'Statinis CV SPA',
+                slug: 'penkilaukai',
+                title: 'Penkilaukai',
                 summary:
-                    'GitHub Pages pritaikytas asmeninis puslapis su vertimais, projektu istorijomis ir PrimeVue struktura.',
+                    'Viešas e. komercijos projektas produktų pristatymui ir praktinei internetinei prekybai.',
+                category: 'E. komercijos projektas',
+                visibility: 'public',
+                status: 'active',
+                logoUrl: publicAssetUrl('images/Penki-laukai-Logo-Black.svg'),
+                primaryTechnology: 'PHP',
+                externalLink: {
+                    kind: 'website',
+                    url: 'https://penkilaukai.lt',
+                },
                 explanation:
-                    'Puslapis atskiria portfolio turini nuo aplikacijos karkaso, todel tekstai, vertimai ir projektai gali keistis nelieciant deployment kelio.',
+                    'Šio projekto istorija vėliau apims prekybos srautą, administravimo procesus ir Laravel/Vue stacką už viešo puslapio.',
                 stack: [
-                    'Vue',
+                    'PHP',
+                    'Laravel',
+                    'Inertia',
+                    'VueJS',
                     'TypeScript',
-                    'PrimeVue',
-                    'vue-i18n',
-                    'GitHub Pages',
+                    'PHPFilament',
                 ],
                 outcomes: [
-                    'Svarus slug marsrutai statiniam hostingui.',
-                    'Pernaudojamas projekto istorijos komponentas.',
-                    'Anglu ir lietuviu turinio struktura.',
+                    'Viešas puslapis pasiekiamas lankytojams.',
+                    'Laravel aplikacijos struktūra produktų ir turinio valdymui.',
+                    'Vue ir TypeScript sąsaja sklandesnei kliento patirčiai.',
                 ],
                 steps: [
                     {
-                        title: 'Marsruto uzklausa',
-                        text: 'Narsykle atidaro sluga, pvz. /projects, o GitHub Pages grazina statines aplikacijos fallback faila.',
-                        signal: 'Slug',
+                        title: 'Vieša parduotuvė',
+                        text: 'Lankytojai patenka į viešą puslapį, peržiūri pasiūlą ir juda per e. komercijos patirtį.',
+                        signal: 'Store',
                     },
                     {
-                        title: 'Aplikacijos ikelimas',
-                        text: 'Vue Router parenka puslapi, vue-i18n nustato kalba, o bendras layout lieka uzkrautas.',
-                        signal: 'SPA',
+                        title: 'Aplikacijos sluoksnis',
+                        text: 'Laravel, Inertia, VueJS ir TypeScript sujungia serverio valdomą srautą su prisitaikančiu frontendu.',
+                        signal: 'Stack',
                     },
                     {
-                        title: 'Istorijos rodymas',
-                        text: 'Pasirinktas projektas uzpildo paaiskinimo dali ir vizualia eiga desineje.',
-                        signal: 'Istorija',
+                        title: 'Operacijos',
+                        text: 'Filament administravimas palaiko produktų ir parduotuvės valdymą už viešos patirties.',
+                        signal: 'Admin',
                     },
                 ],
             },
             {
-                slug: 'workflow-console',
-                title: 'Workflow Console',
+                slug: 'llm-obsidian-bridge',
+                title: 'LLM Obsidian Bridge',
                 summary:
-                    'Projekto formatas, kuris technines sistemas paaiskina kaip matomu sprendimu seka.',
+                    'Asmeninis AI projektas, jungiantis vietinius kalbos modelių procesus su Obsidian žinių baze.',
+                category: 'AI projektas',
+                visibility: 'personal',
+                status: 'experimental',
+                primaryTechnology: 'TypeScript',
+                externalLink: {
+                    kind: 'github',
+                },
                 explanation:
-                    'Komponentas projekto uzrasus pavercia vedama istorija: ka daro naudotojas, ka keicia sistema ir koks rezultatas matomas toliau.',
-                stack: ['Vue', 'Busena', 'Animacija', 'UX tekstai'],
+                    'Istorija aprašys, kaip užrašai, promptai ir vietinio modelio kvietimai gali judėti per atkuriamą automatizavimo procesą.',
+                stack: ['TypeScript', 'Kubernetes', 'Tekton', 'Ollama'],
                 outcomes: [
-                    'Vienu metu aktyvus tik vienas projektas.',
-                    'Skaitomas paaiskinimas salia vizualios eigos.',
-                    'Duomenimis valdoma struktura busimiems projektams.',
+                    'Obsidian orientuotų AI procesų tilto koncepcija.',
+                    'Vietinio modelio eksperimentai su Ollama.',
+                    'Pipeline principu paremtas darbas su Kubernetes ir Tekton.',
                 ],
                 steps: [
                     {
-                        title: 'Konteksto pasirinkimas',
-                        text: 'Lankytojas pasirenka projekta, o komponentas grizta i pirma zingsni.',
-                        signal: 'Pasirinkimas',
+                        title: 'Surinkti užrašus',
+                        text: 'Obsidian turinys tampa darbiniu kontekstu promptams ir automatizavimo užduotims.',
+                        signal: 'Vault',
                     },
                     {
-                        title: 'Veiksmo skaitymas',
-                        text: 'Kaire dalis paaiskina projekta, o desine dalis pereina per vizualias busenas.',
-                        signal: 'Paaiskinimas',
+                        title: 'Paleisti modelio užduotį',
+                        text: 'TypeScript servisai koordinuoja vietinius LLM kvietimus per Ollama ir ruošia struktūruotus atsakymus.',
+                        signal: 'LLM',
                     },
                     {
-                        title: 'Rezultato palyginimas',
-                        text: 'Rezultatai lieka matomi, todel istorija islaiko praktiska inzinerine forma.',
-                        signal: 'Rezultatas',
+                        title: 'Automatizuoti eigą',
+                        text: 'Kubernetes ir Tekton palaiko atkuriamą eksperimentinį procesą jam augant.',
+                        signal: 'Flow',
+                    },
+                ],
+            },
+            {
+                slug: 'tipodieta',
+                title: 'TipoDieta',
+                summary:
+                    'Asmeninis mitybos projektas, tiriantis tipizuotus valgio duomenis, scrapingą ir atkuriamus diegimo procesus.',
+                category: 'Mitybos projektas',
+                visibility: 'personal',
+                status: 'work-in-progress',
+                primaryTechnology: 'TypeScript',
+                externalLink: {
+                    kind: 'github',
+                },
+                explanation:
+                    'Istorija apims kelią nuo surinktų mitybos šaltinių iki struktūruotų duomenų, kurie gali padėti priimti praktinius maisto sprendimus.',
+                stack: ['TypeScript', 'Kubernetes', 'Tekton', 'Web Scraping'],
+                outcomes: [
+                    'Tipizuotas mitybos informacijos duomenų modelis.',
+                    'Scraping procesas šaltinių duomenims rinkti.',
+                    'Diegimo eksperimentai su Kubernetes ir Tekton.',
+                ],
+                steps: [
+                    {
+                        title: 'Rinkti duomenis',
+                        text: 'Web scraping surenka su mityba susijusią šaltinių medžiagą vėlesniam valymui ir struktūravimui.',
+                        signal: 'Scrape',
+                    },
+                    {
+                        title: 'Formuoti įrašus',
+                        text: 'TypeScript išlaiko aiškų mitybos duomenų modelį, kol projektas dar vystomas.',
+                        signal: 'Types',
+                    },
+                    {
+                        title: 'Diegti procesą',
+                        text: 'Kubernetes ir Tekton suteikia atkuriamą vietą pipeline paleidimui ir tobulinimui.',
+                        signal: 'Deploy',
+                    },
+                ],
+            },
+            {
+                slug: 'suber',
+                title: 'Suber',
+                summary:
+                    'Asmeninis AI filmų vertėjo eksperimentas, jungiantis Python apdorojimą su lengva JavaScript sąsaja.',
+                category: 'AI filmų vertėjas',
+                visibility: 'personal',
+                status: 'experimental',
+                primaryTechnology: 'Python',
+                externalLink: {
+                    kind: 'github',
+                },
+                explanation:
+                    'Istorija paaiškins vertimo eigą, kur Python atlieka sunkesnį apdorojimą, o JavaScript palaiko naudotojo sąsajos dalis.',
+                stack: ['Python', 'JavaScript'],
+                outcomes: [
+                    'Eksperimentas, orientuotas į filmų vertimo eigą.',
+                    'Python apdorojimo sluoksnis kalbos užduotims.',
+                    'JavaScript sąsajos sluoksnis sąveikai ir peržiūrai.',
+                ],
+                steps: [
+                    {
+                        title: 'Įkelti medijos kontekstą',
+                        text: 'Projektas prasideda nuo filmo subtitrų ar kalbinės medžiagos, kuriai reikia vertimo pagalbos.',
+                        signal: 'Input',
+                    },
+                    {
+                        title: 'Apdoroti vertimą',
+                        text: 'Python koordinuoja į vertimą orientuotą apdorojimą ir paruošia rezultatą peržiūrai.',
+                        signal: 'Python',
+                    },
+                    {
+                        title: 'Peržiūrėti rezultatą',
+                        text: 'JavaScript gali palaikyti lengvą sluoksnį išversto turinio tikrinimui ir tikslinimui.',
+                        signal: 'Review',
+                    },
+                ],
+            },
+            {
+                slug: 'laravel-tinker',
+                title: 'Laravel-Tinker',
+                summary:
+                    'Asmeninis PHP įrankis, palengvinantis Laravel Tinker procesus tiesiai iš repositorijos.',
+                category: 'Programuotojo įrankis',
+                visibility: 'personal',
+                status: 'tool',
+                primaryTechnology: 'PHP',
+                externalLink: {
+                    kind: 'github',
+                    url: 'https://github.com/Naidzelas/Laravel-Tinker',
+                },
+                explanation:
+                    'Istorija aprašys mažo įrankio eigą ir kodėl greita prieiga prie Laravel Tinker padeda kuriant ir derinant aplikacijas.',
+                stack: ['PHP'],
+                outcomes: [
+                    'Vieša GitHub repositorija įrankiui.',
+                    'Koncentruota PHP pagalba Laravel kūrimo procesams.',
+                    'Maža apimtis, kurią lengva peržiūrėti ir tobulinti.',
+                ],
+                steps: [
+                    {
+                        title: 'Atidaryti projektą',
+                        text: 'Laravel programuotojas pradeda nuo repositorijos, kur greita Tinker prieiga sumažina pasikartojantį pasiruošimą.',
+                        signal: 'Start',
+                    },
+                    {
+                        title: 'Paleisti įrankį',
+                        text: 'PHP įrankis išlaiko dėmesį Laravel runtime aplinkai ir tiriamoms komandoms.',
+                        signal: 'Tinker',
+                    },
+                    {
+                        title: 'Patikrinti rezultatą',
+                        text: 'Procesas palaiko greitą grįžtamąjį ryšį testuojant modelius, servisus ar framework elgseną.',
+                        signal: 'Result',
                     },
                 ],
             },
