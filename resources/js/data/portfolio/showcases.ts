@@ -371,8 +371,8 @@ const penkilaukaiFlowNodesLt: ProjectFlowNode[] = [
     },
     {
         id: 'delivery',
-        label: 'Paysera pristatymas',
-        text: 'Pastomatai ir realios kainos',
+        label: 'Paysera API',
+        text: 'Paysera atsiskaitymo langas su apmokėjimo būdais',
         icon: 'pi-truck',
         href: payseraDeliveryUrl,
         reference: 'app/Services/Payments/PayseraDeliveryService.php',
@@ -380,7 +380,7 @@ const penkilaukaiFlowNodesLt: ProjectFlowNode[] = [
     {
         id: 'order',
         label: 'Užsakymo validacija',
-        text: 'Tikrinami likučiai, kainos ir sumos',
+        text: 'Tikrinamas atsiskaymo rezultatas, kuriamas užsakymas',
         icon: 'pi-verified',
         reference: 'app/Http/Controllers/Api/OrderController.php',
     },
@@ -427,7 +427,7 @@ const penkilaukaiFlowEdgesLt: ProjectFlowEdge[] = [
     { from: 'media', to: 'consent', label: 'nustatymai' },
     { from: 'consent', to: 'cart', label: 'saugojimas' },
     { from: 'cart', to: 'checkout', label: 'pateikimas' },
-    { from: 'checkout', to: 'delivery', label: 'kaina' },
+    { from: 'checkout', to: 'delivery', label: 'pateikimas' },
     { from: 'delivery', to: 'order', label: 'validacija' },
     { from: 'order', to: 'invoice', label: 'patvirtinimas' },
     { from: 'invoice', to: 'admin', label: 'valdymas' },
@@ -855,7 +855,7 @@ const laravelTinkerFlowNodesLt: ProjectFlowNode[] = [
     {
         id: 'scripts',
         label: 'TinkerScripts',
-        text: 'Mazi kartojami skriptai laikomi pagal faila',
+        text: 'Maži kartojami skriptai laikomi pagal failą',
         icon: 'pi-file-edit',
         reference: 'TinkerScripts',
     },

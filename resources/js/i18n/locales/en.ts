@@ -62,6 +62,8 @@ export default {
             title: 'Full-stack developer focused on useful web systems.',
             intro: 'I create practical products with Laravel, Vue, TypeScript, AI, and other technologies.',
             skillsTitle: 'Current stack',
+            ctl: 'Mine',
+            workButton: 'View experience',
             sphereTitle: 'Tools I reach for',
         },
         experience: {
@@ -71,7 +73,7 @@ export default {
         },
         projects: {
             eyebrow: 'Projects',
-            title: 'Project list first, stories when you need the detail.',
+            title: 'A constant desire to improve and build interesting things.',
             intro: 'Browse public and personal projects, filter by technology, then open a story for the project you want to inspect.',
             filterTitle: 'Latest Projects',
         },
@@ -79,6 +81,11 @@ export default {
             missingTitle: 'Project story not found',
             missingIntro:
                 'This project story is not available in the current portfolio data.',
+        },
+        skills: {
+            eyebrow: 'Skills',
+            title: 'Explore my skills',
+            intro: 'Browse the keyword sphere and filter projects by the technologies you care about.',
         },
     },
 } as const;

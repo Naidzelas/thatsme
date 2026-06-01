@@ -12,7 +12,7 @@ export const ollamaUrl = 'https://ollama.com/';
 export const laravelUrl = 'https://laravel.com/';
 export const filamentUrl = 'https://filamentphp.com/';
 export const payseraDeliveryUrl =
-    'https://developers.paysera.com/en/delivery/integrations/library';
+    'https://developers.paysera.com/manage-parcel-deliveries';
 export const ffmpegUrl = 'https://ffmpeg.org/';
 export const openSubtitlesUrl = 'https://www.opensubtitles.com/';
 export const opencvUrl = 'https://opencv.org/';

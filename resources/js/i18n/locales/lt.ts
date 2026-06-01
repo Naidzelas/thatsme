@@ -59,7 +59,9 @@ export default {
             title: 'Full-stack programuotojas, kuriantis naudingas web sistemas.',
             intro: 'Kuriu praktiškus produktus su Laravel, Vue, TypeScript, AI ir kitomis technologijomis.',
             skillsTitle: 'Dabartinis stackas',
-            sphereTitle: 'Irakiai, kuriuos naudoju',
+            ctl: 'MANO',
+            workButton: 'Peržiūrėti patirtį',
+            sphereTitle: 'Įrankiai, kuriuos naudoju',
         },
         experience: {
             eyebrow: 'Darbo patirtis',
@@ -68,7 +70,7 @@ export default {
         },
         projects: {
             eyebrow: 'Projektai',
-            title: 'Pirmiausia projektų sąrašas, o istorijos tada, kai reikia detalių.',
+            title: 'Pastovus noras tobulėti ir kurti įdomius dalykus.',
             intro: 'Peržiūrėk viešus ir asmeninius projektus, filtruok pagal technologiją ir atidaryk pasirinktą istoriją.',
             filterTitle: 'Naujausi projektai',
         },
@@ -76,6 +78,11 @@ export default {
             missingTitle: 'Projekto istorija nerasta',
             missingIntro:
                 'Si projekto istorija nera pasiekiama dabartiniuose portfolio duomenyse.',
+        },
+        skills: {
+            eyebrow: 'Įgūdžiai',
+            title: 'Naršyk mano turimas kompetencijas',
+            intro: 'Peržiūrėk raktažodžių sferą ir filtruok projektus pagal dominančias technologijas.',
         },
     },
 } as const;

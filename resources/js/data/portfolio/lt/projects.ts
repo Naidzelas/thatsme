@@ -12,9 +12,9 @@ import type { ProjectItem } from '../types';
 export const projectsLt: ProjectItem[] = [
     {
         slug: 'penkilaukai',
-        title: 'Penkilaukai',
+        title: 'Penki laukai',
         summary:
-            'Produkcine e. komercijos parduotuve su produktu perziura, issaugomu krepseliu, pristatymo pasirinkimu, uzsakymo validacija, saskaitomis ir saugiu administravimu.',
+            'E. komercijos parduotuvė su produktu peržiūra, išsaugomu krepšeliu, pristatymo pasirinkimu, užsakymo validacija, sąskaitomis ir saugiu administravimu.',
         category: 'E. komercijos projektas',
         visibility: 'public',
         status: 'active',
@@ -25,7 +25,7 @@ export const projectsLt: ProjectItem[] = [
             url: 'https://penkilaukai.lt',
         },
         explanation:
-            'Projektas sujungia klientui matoma Laravel/Inertia/Vue parduotuve su praktinemis backend operacijomis: GDPR sutikimais, krepselio issaugojimu, Paysera pristatymo kainomis, likucius tikrinanciu uzsakymo kurimu, PDF saskaitomis ir MFA apsaugotu Filament administravimu.',
+            "Projeto frontend naudoja TypeScript, VueJS ir PrimeVue su Tailwind CSS. Backendas sukurtas su Laravel ir Filament. Administravimo UI sukurtas su Filament, o saugumas užtikrinamas privalomu daugiafaktoriniu autentifikavimu. Klientų užsakymai apdorojami per Paysera integraciją, o pristatymo pasirinkimas yra Paysera Delivery API. Užsakymo validacija vyksta backend'e, kur Laravel tikrina produktų prieinamumą, kainas, pristatymo detales ir mokėjimo įrašus, kad užtikrintų duomenų vientisumą. Visa sistema sukurta taip, kad būtų lanksti, patikima ir pritaikyta realiam turiniui bei klientų poreikiams.",
         stack: [
             'PHP',
             'Laravel',
@@ -37,75 +37,75 @@ export const projectsLt: ProjectItem[] = [
             'GDPR',
         ],
         outcomes: [
-            'Vieša parduotuve pasiekiama lankytojams ir produktu perziurai.',
-            'Krepselio bei cookie sutikimu srautai pritaikyti realiai kliento sesijai.',
-            'Apmokejimo kelias su pristatymo integracija, validacija, saskaitomis ir el. laiskais.',
-            'Filament administravimas apsaugotas privalomu daugiafaktoriniu prisijungimu.',
+            'Vieša parduotuvė pasiekiama lankytojams ir produktų peržiūrai.',
+            'Krepšelio bei cookie sutikimų srautai pritaikyti realiai kliento sesijai.',
+            'Apmokėjimo kelias su pristatymo integracija, validacija, sąskaitomis ir el. laiškais.',
+            'Filament administravimas apsaugotas daugiafaktoriniu autentifikavimu.',
         ],
         steps: [
             {
                 title: 'Produktu atradimas',
-                text: 'Lankytojai pradeda nuo viesos parduotuves, kur Vue sasaja per Laravel API ikrauna produktu duomenis, media, kainas ir detalius puslapius.',
-                signal: 'Perziura',
+                text: 'Lankytojai pradeda nuo viešos parduotuvės, kur Vue sąsaja per Laravel API įkrauna produktų duomenis, media, kainas ir detalius puslapius.',
+                signal: 'Peržiūra',
                 showcase: createPenkilaukaiShowcase(
                     'lt',
-                    'Viesos parduotuves srautas',
-                    'Produktu atradimas prasideda nuo API palaikomo katalogo ir media perziuru.',
+                    'Viešos parduotuvės srautas',
+                    'Produktu atradimas prasideda nuo API palaikomo katalogo ir media peržiūrų.',
                     ['visitor', 'catalog', 'media'],
                 ),
             },
             {
-                title: 'Sutikimai ir krepselio busena',
-                text: 'Frontend dalis islaiko cookie sutikimus aiskiai matomus, o Pinia krepselis saugo kiekius ir atkuria juos po puslapio perkrovimo per cookie fallback.',
-                signal: 'Busena',
+                title: 'Sutikimai ir krepšelio būsena',
+                text: 'Frontend dalis išlaiko cookie sutikimus aiškiai matomus, o Pinia krepšelis saugo kiekius ir atkuria juos po puslapio perkrovimo per cookie fallback.',
+                signal: 'Būsena',
                 showcase: createPenkilaukaiShowcase(
                     'lt',
-                    'Sutikimas pries issaugojima',
-                    'Krepselis ir GDPR pasirinkimai lieka atskiri, patikrinami ir atkuriami pirkimo sesijoje.',
+                    'Sutikimas prieš išsaugojimą',
+                    'Krepšelis ir GDPR pasirinkimai lieka atskiri, patikrinami ir atkuriami pirkimo sesijoje.',
                     ['consent', 'cart'],
                 ),
             },
             {
-                title: 'Apmokejimas ir pristatymas',
-                text: 'Checkout etape susijungia kliento informacija, pasirinktos krepselio eilutes ir pristatymo budas. Paysera pristatymas pateikia pastomatu pasirinkimus ir kainas pries validacija.',
+                title: 'Apmokėjimas ir pristatymas',
+                text: 'Checkouto etape klientai pateikia pristatymo duomenis, pasirenkia pristatymo būdą per Paysera Delivery API ir klientui paspaudus atsiskaityti, sistema sukuria užsakymą po Paysera apmokėjimo proceso, kad būtų galima patikrinti pristatymo duomenis ir sukurti sąskaitą. Vartotojas grąžinamas į parduotuvę su užsakymo būsena, o el. laiškų seka informuoja apie užsakymo priėmimą, apdorojimą ir pristatymą.',
                 signal: 'Pristatymas',
                 showcase: createPenkilaukaiShowcase(
                     'lt',
                     'Pristatymo konteksto checkout',
-                    'Checkout yra riba tarp frontend busenos, pristatymo tiekejo duomenu ir backend uzsakymo taisykliu.',
+                    'Checkout yra riba tarp frontend būsenos, pristatymo tiekėjo duomenų ir backend užsakymo taisyklių.',
                     ['cart', 'checkout', 'delivery'],
                 ),
             },
             {
-                title: 'Uzsakymo validacija',
-                text: 'Laravel patikrina uzsakyma pagal produktu busena, sumas, likucius, pristatymo detales ir mokejimo irasus, kad backend isliktu tiesos saltinis.',
+                title: 'Užsakymo validacija',
+                text: 'Po apmokėjimo backend patikrina Paysera sėkmingą apmokėjimą, tada sukuriamas užsakymas kurį valdo per Filament.',
                 signal: 'Validacija',
                 showcase: createPenkilaukaiShowcase(
                     'lt',
-                    'Serverio apsaugos taisykles',
-                    'API patikrina krepseli ir pristatymo duomenis pries uzsakymui tampant operaciniu irasu.',
+                    'Serverio apsaugos taisyklės',
+                    'API patikrina krepšelį ir pristatymo duomenis prieš užsakymui tampant operaciniu įrašu.',
                     ['checkout', 'delivery', 'order'],
                 ),
             },
             {
-                title: 'Saskaita ir patvirtinimas',
-                text: 'Priemus uzsakyma sistema paruosia patvirtinimo duomenis, sugeneruoja PDF saskaita ir issiuncia klientui el. laisko seka pagal jo krepseli ir pristatyma.',
+                title: 'Sąskaita ir patvirtinimas',
+                text: 'Priėmus užsakymą sistema paruošia patvirtinimo duomenis, sugeneruoja PDF sąskaitą ir išsiunčia klientui el. laiško seką pagal jo krepšelį ir pristatymą.',
                 signal: 'Patvirtinti',
                 showcase: createPenkilaukaiShowcase(
                     'lt',
                     'Kliento patvirtinimo paketas',
-                    'Priimti uzsakymai pereina i saskaitos generavima ir el. pasto komunikacija.',
+                    'Priimti užsakymai pereina į sąskaitos generavimą ir el. pašto komunikaciją.',
                     ['order', 'invoice'],
                 ),
             },
             {
                 title: 'Administravimo operacijos',
-                text: 'Filament suteikia administratoriui produktu, likuciu, uzsakymu ir turinio valdymo pavirsiu. Privalomas MFA saugo si privilegijuota darba.',
+                text: 'Filament suteikia administratoriui produktų, likučių, užsakymų ir turinio valdymo UI. Privalomas MFA saugo šį privilegijuotą darbą.',
                 signal: 'Admin',
                 showcase: createPenkilaukaiShowcase(
                     'lt',
                     'Apsaugotas administravimas',
-                    'Viesas pirkimo srautas baigiasi operaciniu valdymu, kuris specialiai apsaugotas.',
+                    'Filament UI su MFA apsauga užtikrina, kad tik patvirtinti vartotojai gali valdyti produktus ir užsakymus.',
                     ['admin', 'mfa'],
                 ),
             },
@@ -127,9 +127,9 @@ export const projectsLt: ProjectItem[] = [
             'Bridge priima Copilot chat žinutes, jas validuoja, planavimą perduoda Ollama ir preview-first principu vykdo vault veiksmus per Obsidian Local REST API.',
         stack: ['TypeScript', 'Kubernetes', 'Tekton', 'Ollama'],
         outcomes: [
-            'OpenAI suderinamas `/v1/chat/completions` paviršius Obsidian Copilot integracijai.',
+            'OpenAI suderinamas su Obsidian Copilot integracijai.',
             'Preview-first užrašų keitimai per Obsidian Local REST API.',
-            'Griežtas JSON planavimo ciklas su Ollama ir tipizuotu tool registry.',
+            'Griežtas JSON planavimo ciklas su Ollama ir statinio tipavimo įrankių registru.',
         ],
         steps: [
             {
@@ -391,7 +391,7 @@ export const projectsLt: ProjectItem[] = [
             url: 'https://github.com/Naidzelas/Laravel-Tinker',
         },
         explanation:
-            'Laravel-Tinker laiko greitus eksperimentus šalia projekto. Vietoje nuolatinio snippet kopijavimo į interaktyvų shell, programuotojas parašo mažą skriptą, paleidžia Laravel komandą ir mato rezultatą aplikacijos runtime kontekste.',
+            'Laravel-Tinker leidžia greitus eksperimentus šalia projekto. Vietoje nuolatinio snippet kopijavimo į interaktyvų shell, programuotojas parašo mažą skriptą, paleidžia Laravel komandą ir mato rezultatą aplikacijos runtime kontekste.',
         stack: ['PHP', 'Laravel'],
         outcomes: [
             'Vieša GitHub repositorija fokusuotam Laravel kūrimo įrankiui.',
@@ -411,19 +411,19 @@ export const projectsLt: ProjectItem[] = [
                 ),
             },
             {
-                title: 'Paleisti Artisan pagalbininka',
-                text: 'Terminale `php artisan helper:tinker {filename}` nurodo paleidžiamą skriptą ir išlieka pakankamai trumpa komanda kasdieniam derinimui.',
+                title: 'Paleisti Artisan pagalbininką',
+                text: 'Terminale `php artisan helper:tinker {filename}` nurodo paleidžiamą skriptą ir išlieka pakankamai trumpa komanda kasdieniam naudojimui.',
                 signal: 'Komanda',
                 showcase: createLaravelTinkerShowcase(
                     'lt',
-                    'Viena komandos sąsaja',
-                    'Artisan komanda yra maža riba tarp programuotojo ir išsaugoto skripto.',
+                    'Viena komanda',
+                    'Leidžia paleisti bet kurį skriptą su vienu komandos įėjimu, todėl greiti patikrinimai tampa mažiau kliūtimi.',
                     ['scripts', 'command'],
                 ),
             },
             {
-                title: 'žkrauti Laravel kontekstą',
-                text: 'Pagalbininkas suranda pasirinkta faila ir įvykdo jį Laravel viduje, kur jau pasiekiami modeliai, konfiguracija, servisai ir aplikacijos bootstrapping.',
+                title: 'Įkrauti Laravel kontekstą',
+                text: 'Pagalbininkas suranda pasirinktą failą ir įvykdo jį Laravel viduje, kur jau pasiekiami modeliai, konfiguracija, servisai ir aplikacijos bootstrapping.',
                 signal: 'Runtime',
                 showcase: createLaravelTinkerShowcase(
                     'lt',
@@ -454,6 +454,10 @@ export const projectsLt: ProjectItem[] = [
         visibility: 'personal',
         status: 'experimental',
         primaryTechnology: 'Python',
+        externalLink: {
+            kind: 'github',
+            url: 'https://github.com/Naidzelas/ComputerVision'
+        },
         explanation:
             'Projektas pereina visa mazo objekto detekcijos cikla: prijungti telefono arba webcam saltini, surinkti kadrus, suzymeti train/validation vaizdus YOLO formatu, apmokyti YOLOv8, nukopijuoti geriausius svorius runtime naudojimui, paleisti gyva detekcija, piesti bounding boxes, skaiciuoti klases ir loginti rezultatus i CSV.',
         stack: ['Python', 'Computer Vision', 'OpenCV', 'YOLOv8', 'IP Webcam'],

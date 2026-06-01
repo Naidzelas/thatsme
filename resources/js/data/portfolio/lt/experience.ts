@@ -66,6 +66,7 @@ export const experienceLt: ExperienceItem[] = [
             'Topography',
             'AutoCAD',
             'Photogrammetry',
+            'UAV'
         ],
     },
 ];

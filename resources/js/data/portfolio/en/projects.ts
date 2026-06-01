@@ -25,7 +25,7 @@ export const projectsEn: ProjectItem[] = [
             url: 'https://penkilaukai.lt',
         },
         explanation:
-            'The project connects a customer-facing Laravel/Inertia/Vue store with practical backend operations: GDPR-aware consent, cart persistence, Paysera delivery pricing, stock-aware order creation, PDF invoice delivery, and MFA-protected Filament administration.',
+            'The frontend uses TypeScript, VueJS, PrimeVue, and Tailwind CSS, while the backend is built with Laravel and Filament. Orders are processed through Paysera payment and delivery integration, with backend validation of availability, prices, delivery details, and payment records to ensure data integrity.',
         stack: [
             'PHP',
             'Laravel',
@@ -67,7 +67,7 @@ export const projectsEn: ProjectItem[] = [
             },
             {
                 title: 'Checkout and delivery',
-                text: 'At checkout, customer information, selected cart lines, and delivery choices come together. Paysera delivery integration resolves parcel-machine options and pricing before the order reaches validation.',
+                text: 'At checkout, customer information, selected cart lines, and delivery choices come together. The Paysera Delivery API resolves parcel-machine options and pricing, and the order is created after payment confirmation so delivery details and invoice data can be validated. The customer is returned to the storefront with order status, while email updates cover acceptance, processing, and delivery.',
                 signal: 'Deliver',
                 showcase: createPenkilaukaiShowcase(
                     'en',
@@ -78,7 +78,7 @@ export const projectsEn: ProjectItem[] = [
             },
             {
                 title: 'Order validation',
-                text: 'Laravel validates the incoming order against product state, totals, stock, delivery details, and payment records so the backend remains the source of truth even when the frontend is responsive.',
+                text: 'After payment, Laravel validates the Paysera result and then creates the order, checking product availability, prices, delivery details, and payment records so the backend remains the source of truth.',
                 signal: 'Validate',
                 showcase: createPenkilaukaiShowcase(
                     'en',

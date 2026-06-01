@@ -102,7 +102,32 @@ const rotationState: RotationState = {
 let animationFrameId = 0;
 let latestHitAreas: NodeHitArea[] = [];
 let motionMediaQuery: MediaQueryList | null = null;
+let performanceMediaQuery: MediaQueryList | null = null;
 let resizeObserver: ResizeObserver | null = null;
+let lastDrawTimestamp: number | null = null;
+const isLowPerformanceDevice = ref(false);
+
+interface DragState {
+    active: boolean;
+    startX: number;
+    startY: number;
+    startRotationX: number;
+    startRotationY: number;
+    pointerId: number | null;
+    moved: boolean;
+    hitAreaAtDown: NodeHitArea | null;
+}
+
+const dragState: DragState = {
+    active: false,
+    startX: 0,
+    startY: 0,
+    startRotationX: 0,
+    startRotationY: 0,
+    pointerId: null,
+    moved: false,
+    hitAreaAtDown: null,
+};
 
 const labelFont =
     '700 11px "Instrument Sans", ui-sans-serif, system-ui, sans-serif';
@@ -288,7 +313,9 @@ const prepareCanvas = (canvas: HTMLCanvasElement) => {
     const bounds = canvas.getBoundingClientRect();
     const canvasWidth = Math.max(1, bounds.width);
     const canvasHeight = Math.max(1, bounds.height);
-    const pixelRatio = Math.min(window.devicePixelRatio || 1, 2);
+    const pixelRatio = isLowPerformanceDevice.value
+        ? 1
+        : Math.min(window.devicePixelRatio || 1, 1.5);
     const scaledWidth = Math.floor(canvasWidth * pixelRatio);
     const scaledHeight = Math.floor(canvasHeight * pixelRatio);
 
@@ -370,7 +397,11 @@ const updateRotation = (timestamp: number) => {
     }
 
     rotationState.y += elapsedTime * 0.00013;
-    rotationState.x = 0.18 + Math.sin(timestamp * 0.00018) * 0.07;
+    rotationState.x += elapsedTime * 0.00008;
+
+    if (Math.abs(rotationState.x) > Math.PI * 2) {
+        rotationState.x %= Math.PI * 2;
+    }
 };
 
 const setRotationTargetForNode = (node: MeshNode) => {
@@ -513,11 +544,14 @@ const drawMesh = (timestamp: number) => {
             getSearchOpacity(fromNode),
             getSearchOpacity(toNode),
         );
+        const reducedDetail = isLowPerformanceDevice.value;
 
         context.strokeStyle = `rgba(${palette.rgb}, ${(0.1 + depth * 0.28) * searchOpacity})`;
         context.lineWidth = 0.7 + depth * 1.1;
-        context.shadowColor = `rgba(${palette.rgb}, ${(0.08 + depth * 0.14) * searchOpacity})`;
-        context.shadowBlur = 8 + depth * 10;
+        context.shadowColor = reducedDetail
+            ? 'transparent'
+            : `rgba(${palette.rgb}, ${(0.08 + depth * 0.14) * searchOpacity})`;
+        context.shadowBlur = reducedDetail ? 0 : 8 + depth * 10;
         context.beginPath();
         context.moveTo(fromNode.screenX, fromNode.screenY);
         context.lineTo(toNode.screenX, toNode.screenY);
@@ -555,8 +589,11 @@ const drawMesh = (timestamp: number) => {
             width: labelWidth * node.scale + 8,
         });
 
-        context.shadowColor = `rgba(${palette.rgb}, ${isSelected ? 0.34 : 0.14 + node.depth * 0.12})`;
-        context.shadowBlur = isSelected ? 28 : 18;
+        const reducedDetail = isLowPerformanceDevice.value;
+        context.shadowColor = reducedDetail
+            ? 'transparent'
+            : `rgba(${palette.rgb}, ${isSelected ? 0.34 : 0.14 + node.depth * 0.12})`;
+        context.shadowBlur = reducedDetail ? 0 : isSelected ? 28 : 18;
         context.fillStyle = `rgba(${palette.rgb}, ${isSelected ? 0.2 : 0.1 + node.depth * 0.06})`;
         drawRoundedRect(
             context,
@@ -599,6 +636,38 @@ const selectSkillNode = (nodeIndex: number) => {
     queueFrame();
 };
 
+const getHitAreaAt = (clientX: number, clientY: number) => {
+    const canvas = canvasRef.value;
+
+    if (!canvas) {
+        return null;
+    }
+
+    const bounds = canvas.getBoundingClientRect();
+    const pointerX = clientX - bounds.left;
+    const pointerY = clientY - bounds.top;
+
+    return (
+        latestHitAreas
+            .filter((area) => {
+                if (shouldIgnoreDimmedSearchResult(area)) {
+                    return false;
+                }
+
+                const halfWidth = area.width / 2;
+                const halfHeight = area.height / 2;
+
+                return (
+                    pointerX >= area.screenX - halfWidth &&
+                    pointerX <= area.screenX + halfWidth &&
+                    pointerY >= area.screenY - halfHeight &&
+                    pointerY <= area.screenY + halfHeight
+                );
+            })
+            .sort((first, second) => second.depth - first.depth)[0] ?? null
+    );
+};
+
 const handleCanvasPointerDown = (event: PointerEvent) => {
     const canvas = canvasRef.value;
 
@@ -606,32 +675,64 @@ const handleCanvasPointerDown = (event: PointerEvent) => {
         return;
     }
 
-    const bounds = canvas.getBoundingClientRect();
-    const pointerX = event.clientX - bounds.left;
-    const pointerY = event.clientY - bounds.top;
-    const hitArea = latestHitAreas
-        .filter((area) => {
-            if (shouldIgnoreDimmedSearchResult(area)) {
-                return false;
-            }
+    canvas.setPointerCapture(event.pointerId);
+    dragState.active = true;
+    dragState.pointerId = event.pointerId;
+    dragState.startX = event.clientX;
+    dragState.startY = event.clientY;
+    dragState.startRotationX = rotationState.x;
+    dragState.startRotationY = rotationState.y;
+    dragState.moved = false;
+    dragState.hitAreaAtDown = getHitAreaAt(event.clientX, event.clientY);
+    rotationState.lastTimestamp = null;
+};
 
-            const halfWidth = area.width / 2;
-            const halfHeight = area.height / 2;
-
-            return (
-                pointerX >= area.screenX - halfWidth &&
-                pointerX <= area.screenX + halfWidth &&
-                pointerY >= area.screenY - halfHeight &&
-                pointerY <= area.screenY + halfHeight
-            );
-        })
-        .sort((first, second) => second.depth - first.depth)[0];
-
-    if (!hitArea) {
+const handleCanvasPointerMove = (event: PointerEvent) => {
+    if (!dragState.active || dragState.pointerId !== event.pointerId) {
         return;
     }
 
-    selectSkillNode(hitArea.nodeIndex);
+    const deltaX = event.clientX - dragState.startX;
+    const deltaY = event.clientY - dragState.startY;
+
+    if (!dragState.moved && Math.hypot(deltaX, deltaY) > 4) {
+        dragState.moved = true;
+        rotationState.isTargeting = false;
+    }
+
+    if (dragState.moved) {
+        const rotationFactor = 0.006;
+        rotationState.y += event.movementX * rotationFactor;
+        rotationState.x -= event.movementY * rotationFactor;
+        rotationState.lastTimestamp = null;
+        queueFrame();
+    }
+};
+
+const handleCanvasPointerUp = (event: PointerEvent) => {
+    if (!dragState.active || dragState.pointerId !== event.pointerId) {
+        return;
+    }
+
+    const canvas = canvasRef.value;
+
+    if (canvas && 'hasPointerCapture' in canvas) {
+        try {
+            if (canvas.hasPointerCapture(event.pointerId)) {
+                canvas.releasePointerCapture(event.pointerId);
+            }
+        } catch {
+            // Ignore invalid pointer capture states.
+        }
+    }
+
+    if (!dragState.moved && dragState.hitAreaAtDown) {
+        selectSkillNode(dragState.hitAreaAtDown.nodeIndex);
+    }
+
+    dragState.active = false;
+    dragState.pointerId = null;
+    dragState.hitAreaAtDown = null;
 };
 
 const closeSkillDialog = () => {
@@ -657,7 +758,7 @@ const filterSelectedSkill = () => {
 };
 
 const shouldContinueAnimating = () => {
-    if (prefersReducedMotion.value) {
+    if (prefersReducedMotion.value || document.hidden) {
         return false;
     }
 
@@ -667,7 +768,12 @@ const shouldContinueAnimating = () => {
 const queueFrame = () => {
     window.cancelAnimationFrame(animationFrameId);
     animationFrameId = window.requestAnimationFrame((timestamp) => {
-        drawMesh(timestamp);
+        const frameDelay = isLowPerformanceDevice.value ? 33 : 22;
+
+        if (lastDrawTimestamp === null || timestamp - lastDrawTimestamp >= frameDelay) {
+            drawMesh(timestamp);
+            lastDrawTimestamp = timestamp;
+        }
 
         if (shouldContinueAnimating()) {
             queueFrame();
@@ -675,8 +781,17 @@ const queueFrame = () => {
     });
 };
 
-const handleMotionPreferenceChange = () => {
+const handleVisibilityChange = () => {
+    if (!document.hidden) {
+        rotationState.lastTimestamp = null;
+        lastDrawTimestamp = null;
+        queueFrame();
+    }
+};
+
+const updateDevicePerformanceState = () => {
     prefersReducedMotion.value = motionMediaQuery?.matches ?? false;
+    isLowPerformanceDevice.value = performanceMediaQuery?.matches ?? false;
 
     if (selectedNode.value) {
         setRotationTargetForNode(selectedNode.value);
@@ -688,8 +803,14 @@ const handleMotionPreferenceChange = () => {
 
 onMounted(() => {
     motionMediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
-    prefersReducedMotion.value = motionMediaQuery.matches;
-    motionMediaQuery.addEventListener('change', handleMotionPreferenceChange);
+    performanceMediaQuery = window.matchMedia(
+        '(pointer: coarse), (max-width: 720px)',
+    );
+
+    updateDevicePerformanceState();
+    motionMediaQuery.addEventListener('change', updateDevicePerformanceState);
+    performanceMediaQuery.addEventListener('change', updateDevicePerformanceState);
+    document.addEventListener('visibilitychange', handleVisibilityChange);
 
     if (canvasRef.value) {
         resizeObserver = new ResizeObserver(() => queueFrame());
@@ -701,10 +822,9 @@ onMounted(() => {
 
 onBeforeUnmount(() => {
     window.cancelAnimationFrame(animationFrameId);
-    motionMediaQuery?.removeEventListener(
-        'change',
-        handleMotionPreferenceChange,
-    );
+    motionMediaQuery?.removeEventListener('change', updateDevicePerformanceState);
+    performanceMediaQuery?.removeEventListener('change', updateDevicePerformanceState);
+    document.removeEventListener('visibilitychange', handleVisibilityChange);
     resizeObserver?.disconnect();
 });
 
@@ -747,6 +867,9 @@ watch(searchQuery, () => {
             class="keyword-sphere__canvas"
             aria-hidden="true"
             @pointerdown="handleCanvasPointerDown"
+            @pointermove="handleCanvasPointerMove"
+            @pointerup="handleCanvasPointerUp"
+            @pointercancel="handleCanvasPointerUp"
         />
 
         <ul class="keyword-sphere__legend" aria-label="Skill groups">
@@ -808,8 +931,8 @@ watch(searchQuery, () => {
     display: grid;
     grid-template-rows: auto minmax(0, 1fr) auto;
     gap: 0.8rem;
-    min-height: 28rem;
-    height: clamp(28rem, 60vw, 38rem);
+    min-height: 36rem;
+    height: clamp(36rem, 70vw, 48rem);
     place-items: center;
     overflow: hidden;
 }
@@ -857,11 +980,11 @@ watch(searchQuery, () => {
 }
 
 .keyword-sphere__canvas {
-    width: min(100%, 32rem);
-    height: min(100%, 32rem);
+    width: min(100%, 42rem);
+    height: min(100%, 42rem);
     aspect-ratio: 1;
     cursor: pointer;
-    touch-action: manipulation;
+    touch-action: none;
 }
 
 .keyword-sphere__legend {
@@ -869,7 +992,7 @@ watch(searchQuery, () => {
     flex-wrap: wrap;
     justify-content: center;
     gap: 0.65rem 1rem;
-    width: min(100%, 32rem);
+    width: min(100%, 42rem);
     margin: 0;
     padding: 0 1rem;
     color: #475569;

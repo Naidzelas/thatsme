@@ -6,31 +6,31 @@ export const homeLt: PortfolioContent['home'] = {
         {
             label: 'Kryptis',
             value: 'Produktu kurimas',
-            detail: 'Nuo idejos ir duomenu strukturos iki patikimu frontend procesu.',
+            detail: 'Nuo idėjos ir duomenų struktūros iki patikimų frontend procesų.',
         },
         {
             label: 'Backend',
             value: 'Laravel ir API',
-            detail: 'Aiski domeno logika, integracijos, eiles ir administravimo srautai.',
+            detail: 'Aiški domeno logika, integracijos, eilės ir administravimo srautai.',
         },
         {
             label: 'Frontend',
             value: 'Vue ir TypeScript',
-            detail: 'Prisitaikancios sasajos, kurios islieka tvarkingos su realiu turiniu.',
+            detail: 'Prisitaikančios sąsajos, kurios išlieka tvarkingos su realiu turiniu.',
         },
     ],
     skillGroups: [
         {
             title: 'Aplikacijos',
-            items: ['Laravel', 'PHP', 'REST API', 'Eiles', 'Auth'],
+            items: ['Laravel', 'PHP', 'REST API', 'Eilės', 'Auth'],
         },
         {
-            title: 'Sasaja',
+            title: 'Sąsaja',
             items: ['Vue', 'TypeScript', 'Tailwind CSS', 'PrimeVue'],
         },
         {
             title: 'Procesai',
-            items: ['AI irankiai', 'Python', 'SQL', 'GitHub Actions'],
+            items: ['AI įrankiai', 'Python', 'SQL', 'GitHub Actions'],
         },
     ],
     keywordGroups: [
@@ -40,7 +40,7 @@ export const homeLt: PortfolioContent['home'] = {
             items: softwareEngineeringSkillsLt,
         },
         {
-            title: 'Inzinerija',
+            title: 'Inžinerija',
             tone: 'engineering',
             items: engineeringSkillsLt,
         },

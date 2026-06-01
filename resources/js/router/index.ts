@@ -14,6 +14,14 @@ const router = createRouter({
             },
         },
         {
+            path: '/skills',
+            name: 'skills',
+            component: () => import('@/pages/Skills.vue'),
+            meta: {
+                title: 'Skills',
+            },
+        },
+        {
             path: '/experience',
             name: 'experience',
             component: () => import('@/pages/Experience.vue'),
