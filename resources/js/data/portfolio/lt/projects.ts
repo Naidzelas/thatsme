@@ -204,71 +204,49 @@ export const projectsLt: ProjectItem[] = [
         slug: 'tipodieta',
         title: 'TipoDieta',
         summary:
-            'Asmeninis mitybos duomenų projektas, kuris scraped maisto informacija paverčia tipizuotais, normalizuotais ir atkuriamai paleidziamais įrašais.',
+            'Asmeninis mitybos duomenų projektas, kuris scrapina informacija iš Barboros tinklapio ir saugo į SQLite duomenų bazę.',
         category: 'Mitybos projektas',
         visibility: 'personal',
         status: 'work-in-progress',
         primaryTechnology: 'TypeScript',
         externalLink: {
             kind: 'github',
+            url: 'https://github.com/Naidzelas/nutrition-budget-tra'
         },
         explanation:
-            'TipoDieta į mitybos informaciją žiūri kaip į duomenų inžinerijos užduotį: surinkti šaltinius, palikti netvarkingus įrašus patikrinamus, naudingus laukus sumodeliuoti TypeScript, juos normalizuoti ir kartoti procesą Kubernetes/Tekton aplinkoje.',
+            'Pradėtas kurti testuojant Github Spark. TipoDieta yra asmeniniam naudojimui ir plėtojamas pagal asmeninius poreikius. Duomenys yra scrapinami iš Barboros, kad iš jų būtų galima susidaryti mitybos šablonus, bei stebėti kainą.',
         stack: ['TypeScript', 'Kubernetes', 'Tekton', 'Web Scraping'],
         outcomes: [
-            'Tipizuotas mitybos ir patiekalų informacijos modelis vietoje ad hoc įrašų.',
-            'Rinkimo ir valymo procesas, kuriame šaltinių duomenys lieka peržiūrimi.',
-            'Atkuriami pipeline eksperimentai su Kubernetes ir Tekton.',
-            'Struktūruotų duomenų pagrindas praktiniams maisto sprendimams.',
+            'Kaupiani duomenys apie kainos pokyčius.',
+            'Šablonai greitai modeliuotis ir keisti mitybos planą.',
+            'Aiškus išlaidų planas',
         ],
         steps: [
             {
-                title: 'Pradeti nuo šaltinių medžiagos',
+                title: 'Pradėti nuo šaltinių medžiagos',
                 text: 'Projektas prasideda nuo mitybos šaltinių, kurie naudingi, bet nevienodi. Scraping leidžia surinkti medžiagą be rankinio kiekvieno produkto kopijavimo.',
                 signal: 'Scrape',
                 showcase: createTipoDietaShowcase(
                     'lt',
                     'Surinkti mitybos medžiagą',
-                    'Pipeline pradeda nuo maisto ir patiekalų duomenų, kuriuos vėliau galima tikrinti ir formuoti.',
+                    'Scraping leidžia surinkti duomenis apie produktus, kainas ir maistinę vertę tiesiai iš Barboros tinklapio, todėl galima pradėti nuo realios medžiagos, o ne tuščio lapo.',
                     ['sources', 'scraper'],
                 ),
             },
             {
-                title: 'Palikti raw įrašus patikrinamus',
-                text: 'Surinkti duomenys pirmiausia laikomi pradine medžiaga. Matomas raw etapas padeda rasti trūkstamas reikšmes, šaltinių keistenybes, dublikatus ar vienetus, kuriuos reikia tvarkyti.',
-                signal: 'Raw',
-                showcase: createTipoDietaShowcase(
-                    'lt',
-                    'Išsaugoti netvarkingą sluoksnį',
-                    'Raw įrašai nepraleidžiami; jie tampa audito pėdsaku prieš normalizavimą.',
-                    ['scraper', 'records'],
-                ),
-            },
-            {
-                title: 'Modeliuoti ir normalizuoti',
-                text: 'TypeScript suteikia mitybos modeliui aiškią formą, o valymo taisykles normalizuoja pavadinimus, maistines vertes ir vienetus į nuoseklius įrašus.',
-                signal: 'Types',
-                showcase: createTipoDietaShowcase(
-                    'lt',
-                    'Tipizuoti mitybos įrašai',
-                    'Tipai ir valymo taisykles paverčia surinkta medžiaga duomenimis, kuriais gali remtis projektas.',
-                    ['records', 'types', 'cleanup'],
-                ),
-            },
-            {
-                title: 'Kartoti pipeline paleidimus',
-                text: 'Kubernetes ir Tekton suteikia praktišką vietą kartoti scraping, valymo ir diegimo eksperimentus, kai keičiasi duomenų forma.',
+                title: 'UI duomenų valymui',
+                text: 'Duomenys naudojami kurti šablonus, skaičiuoti kainas ir stebėti pokyčius. Esant poreikiui praplėsti funkcionalumą kuris atitikų realų poreikį. Žinant aiškią mitybos kainą galima priimti geresnius sprendimus apie tai, ką pirkti ir valgyti.',
                 signal: 'Pipeline',
                 showcase: createTipoDietaShowcase(
                     'lt',
-                    'Kartoti duomenų procesą',
-                    'Pipeline paremta aplinka padaro duomenų atnaujinimus ir diegimo bandymus atkuriamus.',
+                    'Šablonų kūrimas ir duomenų valymas',
+                    'Duomenys nėra tobuli, todėl UI leidžia juos valyti, modeliuoti šablonus ir gauti naudingų įžvalgų apie mitybą bei išlaidas.',
                     ['cleanup', 'pipeline', 'cluster'],
                 ),
             },
             {
                 title: 'Palaikyti maisto sprendimus',
-                text: 'Kai įrašai tampa nuoseklus, projektas gali judėti nuo scraping link naudingų palyginimų apie patiekalus, maistines vertes ir praktinius pasirinkimus.',
+                text: 'Kai įrašai tampa nuoseklus, projektas gali judėti nuo scraping link naudingų palyginimų apie patiekalus, maistines vertes ir praktinius pasirinkimus. Visa tai leidžia sistemingai reaguoti į maisto kainų augimą ir planuotis biudžetą tikslingiau.',
                 signal: 'Sprendimai',
                 showcase: createTipoDietaShowcase(
                     'lt',
@@ -283,7 +261,7 @@ export const projectsLt: ProjectItem[] = [
         slug: 'suber',
         title: 'Suber',
         summary:
-            'Lokali subtitru vertimo pipeline, kuri ištraukia, atsisiunčia, parsina, verčia, normalizuoja ir įrašo SRT failus su Python ir Ollama.',
+            'Lokali subtitrų vertimo pipeline, kuri ištraukia, atsisiunčia, parsina, verčia, normalizuoja ir įrašo SRT failus su Python ir Ollama.',
         category: 'AI filmų vertėjas',
         visibility: 'personal',
         status: 'experimental',
@@ -292,7 +270,7 @@ export const projectsLt: ProjectItem[] = [
             kind: 'github',
         },
         explanation:
-            'Suber sukurtas aplink praktišką filmų subtitrų srautą: pasirinkti lokalią mediją, rasti geriausią subtitrų šaltinį, saugiai išparsinti cue, versti ribotais batchais per Ollama, išlaikyti laiką, prireikus paleisti antrą finalizavimo etapą ir įrašyti peržiūrimą rezultatą.',
+            'Suber kuriamas lokalizuoti filmus, kad angliškai nesuprantantiems būtų lengviau juos žiūrėti. Ilgalaikėje perspektyvoje vertimas būtų ne subtitrų pavidalu, bet dubliuotas norima kalba.',
         stack: [
             'Python',
             'JavaScript',
@@ -456,11 +434,17 @@ export const projectsLt: ProjectItem[] = [
         primaryTechnology: 'Python',
         externalLink: {
             kind: 'github',
-            url: 'https://github.com/Naidzelas/ComputerVision'
+            url: 'https://github.com/Naidzelas/ComputerVision',
         },
         explanation:
             'Projektas pereina visa mazo objekto detekcijos cikla: prijungti telefono arba webcam saltini, surinkti kadrus, suzymeti train/validation vaizdus YOLO formatu, apmokyti YOLOv8, nukopijuoti geriausius svorius runtime naudojimui, paleisti gyva detekcija, piesti bounding boxes, skaiciuoti klases ir loginti rezultatus i CSV.',
         stack: ['Python', 'Computer Vision', 'OpenCV', 'YOLOv8', 'IP Webcam'],
+        overviewShowcase: {
+            type: 'gif',
+            url: '/videos/compvision.gif',
+            title: 'Rezultatas',
+            text: 'Trumpas peržiūros vaizdas',
+        },
         outcomes: [
             'Kameros įvestis palaiko IP Webcam srautus ir lokalias web kameras.',
             'Kadrų rinkimo procesas sukuria train ir validation nuotraukas datasetui.',

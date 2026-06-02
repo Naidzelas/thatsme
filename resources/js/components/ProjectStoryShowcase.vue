@@ -30,7 +30,27 @@ onBeforeUnmount(() => {
     phoneViewportQuery?.removeEventListener('change', updatePhoneViewport);
 });
 
+const overviewTeaserShowcase = computed<ProjectShowcase | undefined>(() => {
+    if (!props.isOverview || !props.showcase) {
+        return undefined;
+    }
+
+    const teaserTypes: ProjectShowcase['type'][] = ['image', 'gif', 'video'];
+
+    if (teaserTypes.includes(props.showcase.type) && props.showcase.url) {
+        return props.showcase;
+    }
+
+    return undefined;
+});
+
+const isOverviewTeaser = computed(() => Boolean(overviewTeaserShowcase.value));
+
 const resolvedShowcase = computed<ProjectShowcase>(() => {
+    if (props.isOverview && overviewTeaserShowcase.value) {
+        return overviewTeaserShowcase.value;
+    }
+
     if (props.isOverview) {
         return {
             type: 'placeholder',
@@ -142,12 +162,55 @@ const flowNodeReferenceTitle = (node: ProjectFlowNode) => {
 
 <template>
     <section
-        class="project-showcase overflow-hidden rounded-lg border border-slate-800 bg-slate-950 text-white shadow-xl shadow-slate-950/15"
+        class="bg-slate-950 shadow-slate-950/15 shadow-xl border border-slate-800 rounded-lg overflow-hidden text-white project-showcase"
     >
         <Transition name="showcase-fade" mode="out-in">
             <div :key="showcaseKey" class="project-showcase__frame">
+                <template v-if="isOverviewTeaser">
+                    <div class="project-showcase__content project-showcase__overview">
+                        <div class="project-showcase__overview-header">
+                            <p
+                                v-if="resolvedShowcase.title"
+                                class="font-semibold text-sky-300 text-sm uppercase tracking-normal"
+                            >
+                                {{ resolvedShowcase.title }}
+                            </p>
+                        </div>
+
+                        <div class="project-showcase__overview-teaser">
+                            <img
+                                v-if="
+                                    (resolvedShowcase.type === 'image' ||
+                                        resolvedShowcase.type === 'gif') &&
+                                    resolvedShowcase.url
+                                "
+                                :src="resolvedShowcase.url"
+                                :alt="
+                                    resolvedShowcase.alt ?? resolvedShowcase.title ?? ''
+                                "
+                                class="project-showcase__overview-media"
+                                loading="lazy"
+                            />
+
+                            <video
+                                v-else-if="resolvedShowcase.type === 'video' && resolvedShowcase.url"
+                                class="project-showcase__overview-media"
+                                :poster="resolvedShowcase.posterUrl"
+                                controls
+                                playsinline
+                            >
+                                <source :src="resolvedShowcase.url" />
+                            </video>
+                        </div>
+
+                        <p class="project-showcase__overview-note">
+                            {{ t('labels.clickNextToViewStory') }}
+                        </p>
+                    </div>
+                </template>
+
                 <template
-                    v-if="
+                    v-else-if="
                         (resolvedShowcase.type === 'image' ||
                             resolvedShowcase.type === 'gif') &&
                         resolvedShowcase.url
@@ -158,7 +221,7 @@ const flowNodeReferenceTitle = (node: ProjectFlowNode) => {
                         :alt="
                             resolvedShowcase.alt ?? resolvedShowcase.title ?? ''
                         "
-                        class="h-full w-full object-cover"
+                        class="w-full h-full object-cover"
                         loading="lazy"
                     />
                 </template>
@@ -170,7 +233,7 @@ const flowNodeReferenceTitle = (node: ProjectFlowNode) => {
                     "
                 >
                     <video
-                        class="h-full w-full object-cover"
+                        class="w-full h-full object-cover"
                         :poster="resolvedShowcase.posterUrl"
                         controls
                         playsinline
@@ -186,7 +249,7 @@ const flowNodeReferenceTitle = (node: ProjectFlowNode) => {
                     "
                 >
                     <iframe
-                        class="h-full w-full border-0"
+                        class="border-0 w-full h-full"
                         :src="resolvedShowcase.url"
                         :title="resolvedShowcase.title ?? t('labels.showcase')"
                         loading="lazy"
@@ -203,24 +266,24 @@ const flowNodeReferenceTitle = (node: ProjectFlowNode) => {
                     <div class="project-showcase__content">
                         <p
                             v-if="resolvedShowcase.title"
-                            class="text-sm font-semibold tracking-normal text-sky-300 uppercase"
+                            class="font-semibold text-sky-300 text-sm uppercase tracking-normal"
                         >
                             {{ resolvedShowcase.title }}
                         </p>
                         <p
                             v-if="resolvedShowcase.text"
-                            class="max-w-xl text-base leading-7 text-slate-300"
+                            class="max-w-xl text-slate-300 text-base leading-7"
                         >
                             {{ resolvedShowcase.text }}
                         </p>
-                        <div class="grid w-full gap-3 sm:grid-cols-2">
+                        <div class="gap-3 grid sm:grid-cols-2 w-full">
                             <a
                                 v-for="link in resolvedShowcase.links"
                                 :key="link.url"
                                 :href="link.url"
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                class="flex items-center gap-3 rounded-lg border border-slate-700 bg-slate-900/70 px-4 py-3 text-sm font-semibold text-slate-100 transition hover:border-sky-400 hover:text-white"
+                                class="flex items-center gap-3 bg-slate-900/70 px-4 py-3 border border-slate-700 hover:border-sky-400 rounded-lg font-semibold text-slate-100 hover:text-white text-sm transition"
                             >
                                 <i
                                     :class="[
@@ -245,13 +308,13 @@ const flowNodeReferenceTitle = (node: ProjectFlowNode) => {
                         <div class="project-showcase__flow-header">
                             <p
                                 v-if="resolvedShowcase.title"
-                                class="text-sm font-semibold tracking-normal text-sky-300 uppercase"
+                                class="font-semibold text-sky-300 text-sm uppercase tracking-normal"
                             >
                                 {{ resolvedShowcase.title }}
                             </p>
                             <p
                                 v-if="resolvedShowcase.text"
-                                class="mt-2 text-sm leading-6 text-slate-300"
+                                class="mt-2 text-slate-300 text-sm leading-6"
                             >
                                 {{ resolvedShowcase.text }}
                             </p>
@@ -381,7 +444,7 @@ const flowNodeReferenceTitle = (node: ProjectFlowNode) => {
                     </div>
                 </template>
 
-                <div v-else class="project-showcase__content text-center">
+                <div v-else class="text-center project-showcase__content">
                     <i
                         :class="[
                             resolvedShowcase.icon ?? 'pi pi-images',
@@ -391,11 +454,11 @@ const flowNodeReferenceTitle = (node: ProjectFlowNode) => {
                     />
                     <p
                         v-if="resolvedShowcase.title"
-                        class="text-sm font-semibold tracking-normal text-slate-400 uppercase"
+                        class="font-semibold text-slate-400 text-sm uppercase tracking-normal"
                     >
                         {{ resolvedShowcase.title }}
                     </p>
-                    <p class="max-w-md text-base leading-7 text-slate-200">
+                    <p class="max-w-md text-slate-200 text-base leading-7">
                         {{ resolvedShowcase.text }}
                     </p>
                 </div>
@@ -439,6 +502,48 @@ const flowNodeReferenceTitle = (node: ProjectFlowNode) => {
     gap: 1.25rem;
     padding: 1.25rem;
     overflow: hidden;
+}
+
+.project-showcase__overview {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    height: 100%;
+    min-height: 0;
+    padding: 2rem;
+    overflow: hidden;
+}
+
+.project-showcase__overview-header {
+    width: 100%;
+    max-width: 48rem;
+}
+
+.project-showcase__overview-teaser {
+    width: 100%;
+    max-width: 48rem;
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    border-radius: 1rem;
+    border: 1px solid rgba(71, 85, 105, 0.95);
+    background: rgba(15, 23, 42, 0.75);
+}
+
+.project-showcase__overview-media {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.project-showcase__overview-note {
+    max-width: 48rem;
+    color: rgb(226, 232, 240);
+    font-size: 0.95rem;
+    line-height: 1.75;
+    text-align: center;
 }
 
 .project-showcase__flow-header {

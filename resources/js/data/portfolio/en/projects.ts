@@ -204,76 +204,54 @@ export const projectsEn: ProjectItem[] = [
         slug: 'tipodieta',
         title: 'TipoDieta',
         summary:
-            'A personal nutrition data project that turns scraped food information into typed, normalized records and repeatable pipeline runs.',
+            'A personal nutrition data project that scrapes information from the Barbora website and stores it in a SQLite database.',
         category: 'Nutrition project',
         visibility: 'personal',
         status: 'work-in-progress',
         primaryTechnology: 'TypeScript',
         externalLink: {
             kind: 'github',
+            url: 'https://github.com/Naidzelas/nutrition-budget-tra'
         },
         explanation:
-            'TipoDieta treats nutrition information as a data-engineering problem: collect source material, keep messy records visible, model the useful fields in TypeScript, normalize them, and run the workflow in a repeatable Kubernetes/Tekton environment.',
+            'Started as an experiment with GitHub Spark. TipoDieta is for personal use and grows according to personal needs. It scrapes data from Barbora so meal templates can be built and price changes tracked.',
         stack: ['TypeScript', 'Kubernetes', 'Tekton', 'Web Scraping'],
         outcomes: [
-            'Typed model for nutrition and meal information instead of ad hoc records.',
-            'Collection and cleanup process that keeps source data reviewable.',
-            'Repeatable pipeline experiments using Kubernetes and Tekton.',
-            'Structured data foundation for practical food and meal decisions.',
+            'Collected data documents price changes over time.',
+            'Templates can be modeled quickly and the nutrition plan adjusted.',
+            'A clear budget plan for food costs.',
         ],
         steps: [
             {
                 title: 'Start from source material',
-                text: 'The project begins with nutrition-oriented source material that is useful but inconsistent. Scraping gives the workflow a way to collect that material without manually copying every food item.',
+                text: 'The project begins with nutrition sources that are useful but inconsistent. Scraping gathers product, price, and nutrition data from Barbora without manual copying.',
                 signal: 'Scrape',
                 showcase: createTipoDietaShowcase(
                     'en',
                     'Collect nutrition material',
-                    'The pipeline starts by gathering food and meal data that can later be inspected and shaped.',
+                    'Scraping gathers data about products, prices, and nutrition directly from the Barbora website so the project starts from real material instead of a blank page.',
                     ['sources', 'scraper'],
                 ),
             },
             {
-                title: 'Keep raw records inspectable',
-                text: 'Collected data is treated as raw material first. Keeping that stage visible makes it easier to spot missing values, source quirks, duplicate foods, or units that need cleanup.',
-                signal: 'Raw',
-                showcase: createTipoDietaShowcase(
-                    'en',
-                    'Preserve the messy layer',
-                    'Raw records are not skipped; they are the audit trail for later normalization.',
-                    ['scraper', 'records'],
-                ),
-            },
-            {
-                title: 'Model and normalize',
-                text: 'TypeScript gives the nutrition model a clear shape while cleanup rules normalize names, nutrient values, and units into records the application can use consistently.',
-                signal: 'Types',
-                showcase: createTipoDietaShowcase(
-                    'en',
-                    'Typed nutrition records',
-                    'Types and cleanup rules turn scraped material into data the rest of the project can trust.',
-                    ['records', 'types', 'cleanup'],
-                ),
-            },
-            {
-                title: 'Run repeatable pipelines',
-                text: 'Kubernetes and Tekton give the project a practical place to rerun scraping, cleanup, and deployment experiments as the data shape changes.',
+                title: 'Use the UI for cleanup',
+                text: 'Data is used to build templates, calculate costs, and track changes. The UI helps clean, model, and extend the dataset to reflect real needs.',
                 signal: 'Pipeline',
                 showcase: createTipoDietaShowcase(
                     'en',
-                    'Repeat the data workflow',
-                    'A pipeline-oriented setup keeps data refreshes and deployment experiments reproducible.',
+                    'Template building and data cleanup',
+                    'The UI lets you clean the data, model templates, and get useful insights about nutrition and costs.',
                     ['cleanup', 'pipeline', 'cluster'],
                 ),
             },
             {
                 title: 'Support food decisions',
-                text: 'Once the records are consistent, the project can move from raw scraping toward useful comparisons and decisions about meals, nutrition values, and practical food choices.',
-                signal: 'Decide',
+                text: 'Once the records are consistent, the project can move from scraping to useful comparisons about meals, nutrition values, and practical food choices. It helps respond to rising food prices and plan the budget more deliberately.',
+                signal: 'Decisions',
                 showcase: createTipoDietaShowcase(
                     'en',
-                    'From records to choices',
-                    'The target is not scraping for its own sake; it is usable nutrition data that supports everyday decisions.',
+                    'From records to practical choices',
+                    'The goal is not scraping for its own sake; it is usable nutrition data that supports everyday decisions.',
                     ['cluster', 'decisions'],
                 ),
             },
@@ -283,7 +261,7 @@ export const projectsEn: ProjectItem[] = [
         slug: 'suber',
         title: 'Suber',
         summary:
-            'A local subtitle translation pipeline that extracts, downloads, parses, translates, normalizes, and writes SRT files with Python and Ollama.',
+            'Suber is built to localize movies so viewers who do not understand English can watch them more easily. The long-term goal is not only subtitles but dubbed audio in the target language.',
         category: 'AI movie translator',
         visibility: 'personal',
         status: 'experimental',
@@ -292,7 +270,7 @@ export const projectsEn: ProjectItem[] = [
             kind: 'github',
         },
         explanation:
-            'Suber is built around a practical movie-subtitle workflow: select local media, choose the best subtitle source, parse cues safely, translate in bounded batches through Ollama, preserve timing, optionally run a second finalization stage, and write reviewable output.',
+            'Suber is built around a practical movie localization workflow: select local media, choose the best subtitle source, parse cues safely, translate in bounded batches through Ollama, preserve timing, optionally run a second finalization stage, and write reviewable output. The focus is on making films accessible for non-English speakers with a future path toward dubbed audio.',
         stack: [
             'Python',
             'JavaScript',
@@ -463,6 +441,12 @@ export const projectsEn: ProjectItem[] = [
             'YOLO-format annotations and dataset config support repeatable model training.',
             'Live detector counts tubs and packages while writing CSV logs for later review.',
         ],
+        overviewShowcase: {
+            type: 'gif',
+            url: '/videos/compvision.gif',
+            title: 'Result',
+            text: 'Short preview',
+        },
         steps: [
             {
                 title: 'Choose a camera source',

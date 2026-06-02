@@ -348,7 +348,7 @@ onBeforeUnmount(() => {
         <ProjectStoryShowcase
             class="project-story__showcase"
             :is-overview="isOverviewSlide"
-            :showcase="activeStep?.showcase"
+            :showcase="isOverviewSlide ? project.overviewShowcase : activeStep?.showcase"
             :fallback-title="activeStep?.title"
         />
     </article>

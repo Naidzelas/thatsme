@@ -91,6 +91,7 @@ export interface ProjectItem {
     stack: string[];
     outcomes: string[];
     steps: ProjectStep[];
+    overviewShowcase?: ProjectShowcase;
 }
 
 export interface PortfolioSocialLink {
