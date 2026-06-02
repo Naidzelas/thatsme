@@ -4,7 +4,7 @@ import { copyFile } from 'node:fs/promises';
 import { fileURLToPath, URL } from 'node:url';
 import { defineConfig } from 'vite';
 
-const githubPagesBase = process.env.VITE_BASE_PATH ?? '/thatsme/';
+const githubPagesBase = process.env.VITE_BASE_PATH ?? '/';
 
 const githubPagesFallback = () => ({
     name: 'github-pages-fallback',
