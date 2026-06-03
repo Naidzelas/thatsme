@@ -122,6 +122,7 @@ export const projectsEn: ProjectItem[] = [
         primaryTechnology: 'TypeScript',
         externalLink: {
             kind: 'github',
+            url: 'https://github.com/Naidzelas/llm_obsidian_connector'
         },
         explanation:
             'The bridge receives Copilot chat messages, validates them, routes planning through Ollama, and executes preview-first vault actions through the Obsidian Local REST API.',
@@ -131,6 +132,15 @@ export const projectsEn: ProjectItem[] = [
             'Preview-first note mutations through the Obsidian Local REST API.',
             'Strict JSON planning loop with Ollama and a typed tool registry.',
         ],
+        overviewShowcase: {
+            type: 'video',
+            url: '/videos/obsidianbridge720.mp4',
+            title: 'Result',
+            text: 'A brief preview',
+            autoplay: true,
+            loop: true,
+            muted: true,
+        },
         steps: [
             {
                 title: 'Copilot request',
@@ -211,7 +221,7 @@ export const projectsEn: ProjectItem[] = [
         primaryTechnology: 'TypeScript',
         externalLink: {
             kind: 'github',
-            url: 'https://github.com/Naidzelas/nutrition-budget-tra'
+            url: 'https://github.com/Naidzelas/nutrition-budget-tra',
         },
         explanation:
             'Started as an experiment with GitHub Spark. TipoDieta is for personal use and grows according to personal needs. It scrapes data from Barbora so meal templates can be built and price changes tracked.',
@@ -268,6 +278,7 @@ export const projectsEn: ProjectItem[] = [
         primaryTechnology: 'Python',
         externalLink: {
             kind: 'github',
+            url: 'https://github.com/Naidzelas/Suber',
         },
         explanation:
             'Suber is built around a practical movie localization workflow: select local media, choose the best subtitle source, parse cues safely, translate in bounded batches through Ollama, preserve timing, optionally run a second finalization stage, and write reviewable output. The focus is on making films accessible for non-English speakers with a future path toward dubbed audio.',
@@ -432,6 +443,10 @@ export const projectsEn: ProjectItem[] = [
         visibility: 'personal',
         status: 'experimental',
         primaryTechnology: 'Python',
+        externalLink: {
+            kind: 'github',
+            url: 'https://github.com/Naidzelas/ComputerVision',
+        },
         explanation:
             'The project walks through a complete small-object detection loop: connect a phone or webcam source, collect frames, label train/validation images in YOLO format, train YOLOv8, copy the best weights into runtime, run live detection, draw boxes, count classes, and log timestamped counts to CSV.',
         stack: ['Python', 'Computer Vision', 'OpenCV', 'YOLOv8', 'IP Webcam'],

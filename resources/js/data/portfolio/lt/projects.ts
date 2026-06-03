@@ -122,6 +122,7 @@ export const projectsLt: ProjectItem[] = [
         primaryTechnology: 'TypeScript',
         externalLink: {
             kind: 'github',
+            url: 'https://github.com/Naidzelas/llm_obsidian_connector'
         },
         explanation:
             'Bridge priima Copilot chat žinutes, jas validuoja, planavimą perduoda Ollama ir preview-first principu vykdo vault veiksmus per Obsidian Local REST API.',
@@ -131,6 +132,15 @@ export const projectsLt: ProjectItem[] = [
             'Preview-first užrašų keitimai per Obsidian Local REST API.',
             'Griežtas JSON planavimo ciklas su Ollama ir statinio tipavimo įrankių registru.',
         ],
+        overviewShowcase: {
+            type: 'video',
+            url: '/videos/obsidianbridge720.mp4',
+            title: 'Rezultatas',
+            text: 'Trumpas peržiūros vaizdas',
+            autoplay: true,
+            loop: true,
+            muted: true,
+        },
         steps: [
             {
                 title: 'Copilot užklausa',
@@ -268,6 +278,7 @@ export const projectsLt: ProjectItem[] = [
         primaryTechnology: 'Python',
         externalLink: {
             kind: 'github',
+            url: 'https://github.com/Naidzelas/Suber'
         },
         explanation:
             'Suber kuriamas lokalizuoti filmus, kad angliškai nesuprantantiems būtų lengviau juos žiūrėti. Ilgalaikėje perspektyvoje vertimas būtų ne subtitrų pavidalu, bet dubliuotas norima kalba.',

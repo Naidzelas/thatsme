@@ -196,6 +196,9 @@ const flowNodeReferenceTitle = (node: ProjectFlowNode) => {
                                 v-else-if="resolvedShowcase.type === 'video' && resolvedShowcase.url"
                                 class="project-showcase__overview-media"
                                 :poster="resolvedShowcase.posterUrl"
+                                :autoplay="resolvedShowcase.autoplay"
+                                :loop="resolvedShowcase.loop"
+                                :muted="resolvedShowcase.autoplay || resolvedShowcase.muted"
                                 controls
                                 playsinline
                             >
@@ -235,6 +238,9 @@ const flowNodeReferenceTitle = (node: ProjectFlowNode) => {
                     <video
                         class="w-full h-full object-cover"
                         :poster="resolvedShowcase.posterUrl"
+                        :autoplay="resolvedShowcase.autoplay"
+                        :loop="resolvedShowcase.loop"
+                        :muted="resolvedShowcase.autoplay || resolvedShowcase.muted"
                         controls
                         playsinline
                     >

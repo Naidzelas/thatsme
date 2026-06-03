@@ -53,6 +53,9 @@ export interface ProjectShowcase {
     url?: string;
     posterUrl?: string;
     alt?: string;
+    autoplay?: boolean;
+    loop?: boolean;
+    muted?: boolean;
     links?: ProjectShowcaseLink[];
     icon?: string;
     nodes?: ProjectFlowNode[];
