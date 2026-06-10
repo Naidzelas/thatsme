@@ -4,17 +4,17 @@ import Aura from '@primeuix/themes/aura';
 const MyPreset = definePreset(Aura, {
     semantic: {
         primary: {
-            50: '{orange.50}',
-            100: '{orange.100}',
-            200: '{orange.200}',
-            300: '{orange.300}',
-            400: '{orange.400}',
-            500: '{orange.500}',
-            600: '{orange.600}',
-            700: '{orange.700}',
-            800: '{orange.800}',
-            900: '{orange.900}',
-            950: '{orange.950}',
+            50: '#FBE6D7',
+            100: '#F6C9A8',
+            200: '#F0A06A',
+            300: '#E3733F',
+            400: '#D75A21',
+            500: '#C44A00',
+            600: '#B33E00',
+            700: '#8B3A00',
+            800: '#6F3000',
+            900: '#4F2300',
+            950: '#2F1400',
         },
     },
 });

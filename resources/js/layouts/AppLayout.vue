@@ -55,12 +55,12 @@ const isActivePath = (path: string) => {
 </script>
 
 <template>
-    <div class="flex min-h-screen flex-col bg-slate-50 text-slate-950">
+    <div class="flex flex-col bg-slate-50 min-h-screen text-slate-950">
         <header
-            class="sticky top-0 z-40 border-b border-slate-800 bg-slate-950 px-5 py-4 shadow-lg shadow-slate-950/10 lg:px-12"
+            class="top-0 z-40 sticky bg-slate-950 shadow-lg shadow-slate-950/10 px-5 lg:px-12 py-4 border-slate-800 border-b"
         >
             <div
-                class="mx-auto flex min-h-17 max-w-7xl items-center justify-between gap-6"
+                class="flex justify-between items-center gap-6 mx-auto max-w-7xl min-h-17"
             >
                 <RouterLink
                     class="flex items-center gap-4"
@@ -68,19 +68,23 @@ const isActivePath = (path: string) => {
                     @click="closeMenu"
                 >
                     <span
-                        class="grid h-10 w-10 place-items-center rounded-lg bg-white text-slate-950 shadow-sm"
+                        class="flex items-center bg-white shadow-sm pl-3 rounded-lg w-14 h-14 text-slate-950"
                         aria-hidden="true"
                     >
-                        <i class="pi pi-bolt text-lg" />
+                        <img
+                            src="/images/brand-logo-no-bg.png"
+                            :alt="t('app.name')"
+                            class="w-10 max-w-10 h-10 object-contain"
+                        />
                     </span>
-                    <span class="text-lg font-semibold text-white">{{
+                    <span class="font-semibold text-white text-lg">{{
                         t('app.name')
                     }}</span>
                 </RouterLink>
 
                 <button
                     type="button"
-                    class="grid h-11 w-11 place-items-center rounded-lg border border-slate-700 text-slate-300 transition hover:border-slate-500 hover:text-white lg:hidden"
+                    class="lg:hidden place-items-center grid border border-slate-700 hover:border-slate-500 rounded-lg w-11 h-11 text-slate-300 hover:text-white transition"
                     :aria-label="
                         isMenuOpen ? t('app.closeMenu') : t('app.openMenu')
                     "
@@ -102,7 +106,7 @@ const isActivePath = (path: string) => {
                     ]"
                 >
                     <nav
-                        class="flex flex-col gap-2 lg:flex-row lg:items-center lg:justify-center"
+                        class="flex lg:flex-row flex-col lg:justify-center lg:items-center gap-2"
                     >
                         <RouterLink
                             v-for="item in navItems"
@@ -122,11 +126,11 @@ const isActivePath = (path: string) => {
                     </nav>
 
                     <div
-                        class="mt-5 flex items-center justify-between gap-3 border-t border-slate-800 pt-5 lg:mt-0 lg:border-0 lg:pt-0"
+                        class="flex justify-between items-center gap-3 mt-5 lg:mt-0 pt-5 lg:pt-0 border-slate-800 lg:border-0 border-t"
                     >
                         <span class="sr-only">{{ t('app.language') }}</span>
                         <div
-                            class="flex rounded-lg border border-slate-700 bg-slate-900 p-1"
+                            class="flex bg-slate-900 p-1 border border-slate-700 rounded-lg"
                         >
                             <button
                                 v-for="supportedLocale in supportedLocales"
@@ -149,15 +153,15 @@ const isActivePath = (path: string) => {
             </div>
         </header>
 
-        <main class="min-h-0 flex-1">
+        <main class="flex-1 min-h-0">
             <RouterView />
         </main>
 
         <footer
-            class="shrink-0 border-t border-slate-200 bg-white px-5 py-6 lg:px-12"
+            class="bg-white px-5 lg:px-12 py-6 border-slate-200 border-t shrink-0"
         >
             <div
-                class="mx-auto flex max-w-7xl flex-col gap-3 text-sm text-slate-600 sm:flex-row sm:items-center sm:justify-between"
+                class="flex sm:flex-row flex-col sm:justify-between sm:items-center gap-3 mx-auto max-w-7xl text-slate-600 text-sm"
             >
                 <span class="font-semibold text-slate-900">{{
                     t('app.name')
